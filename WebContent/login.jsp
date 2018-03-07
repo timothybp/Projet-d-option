@@ -55,7 +55,7 @@
         			class="loginRectangle" 
         			style="position:relative;top:140px;border:2px solid;border-radius:25px;
         			      margin:auto;width:400px;height:200px">
-        			<form action="action_page.php">
+        			<form action="login" method="post">
         				<p style="position:relative; top:20px; text-align:center;">Vous êtes :
         				<input type="radio" name="role">Etudiant.e
 						<input type="radio" name="role">Professeur
