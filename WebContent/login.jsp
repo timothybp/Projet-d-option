@@ -48,7 +48,7 @@
                 <div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:100px;text-align:center;">
-                	<h1>Login</h1>
+                	<h1>Connexion</h1>
         		</div>
         		
         		<div id="u1"
@@ -57,9 +57,9 @@
         			      margin:auto;width:400px;height:200px">
         			<form action="login" method="post">
         				<p style="position:relative; top:20px; text-align:center;">Vous êtes :
-        				<input type="radio" name="role">Etudiant.e
-						<input type="radio" name="role">Professeur
-						<input type="radio" name="role">Administrateur
+        				<input type="radio" name="role" value="student" checked>Etudiant.e
+						<input type="radio" name="role" value="teacher">Professeur
+						<input type="radio" name="role" value="admin">Administrateur
 						</p>
 						<br><br>
 						<p style="text-align:center;">Nom d'utilisateur :
@@ -67,11 +67,17 @@
 						</p>
 						<br>
 						<p style="text-align:center;">Mot de passe :&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-						<input type="text" name="password">
+						<input type="password" name="password">
 						</p>
 						<br><br>
 						<p style="text-align:center;"> <input type="submit" value="Se connecter" style="width:120px;height:30px;"></p>
 					</form> 
+        		</div>
+        		
+        		<div id="u2" 
+                	class="remindMessage" 
+                	style="position:relative;top:150px;text-align:center;">
+                	<font size="2" color="red"><i>( Le nom d'utilisateur est votre numéro avec la lettre "t", ex: 21800000t )</i></font>
         		</div>
             </section>
         </div>

@@ -1,2 +1,5 @@
+/META-INF/
 /controllers/
-/model/
+/daos/
+/models/
+/services/
