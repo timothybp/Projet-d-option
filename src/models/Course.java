@@ -17,6 +17,9 @@ public class Course {
 	private Date endDate;
 	private int duration;
 	private int semester;
+	private int membreAmount;
+	private float weight;
+	private Date choosingDeadline;
 	
 	@ManyToOne
     @JoinColumn(name="idResponsable")
@@ -73,7 +76,31 @@ public class Course {
 	public void setSemester(int semester) {
 		this.semester = semester;
 	}
+	
+	public int getMembreAmount() {
+		return membreAmount;
+	}
 
+	public void setMembreAmount(int membreAmount) {
+		this.membreAmount = membreAmount;
+	}
+
+	public float getWeight() {
+		return weight;
+	}
+
+	public void setWeight(float weight) {
+		this.weight = weight;
+	}
+
+	public Date getChoosingDeadline() {
+		return choosingDeadline;
+	}
+
+	public void setChoosingDeadline(Date choosingDeadline) {
+		this.choosingDeadline = choosingDeadline;
+	}
+	
 	public Teacher getTeacher() {
 		return teacher;
 	}

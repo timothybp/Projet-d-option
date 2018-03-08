@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String username = request.getParameter("username");
+		/*String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String role = request.getParameter("role");
 		
@@ -129,7 +129,30 @@ public class LoginServlet extends HttpServlet {
 			out.print("alert(\"Erreur: Le nom d'utilisateur et le mot de passe ne peuvent pas être vides!\");");
 			out.print("window.location.href=\"/DistributionDeProjets/login.jsp\"");
 			out.print("</script>");
-		}
+		}*/
+		
+		StudentService studentService = new StudentService();
+		
+		//connect database
+		EntityManager em = studentService.connectDatabase();
+		EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+
+        Student student = new Student();
+        student.setIdStudent(21506022);;
+        student.setSurname("BI");
+        student.setName("Peng");
+        student.setBirthday(new Date());
+        student.setSex("Homme");
+        student.setDepartment("Informatique");
+        student.setGrade(5);
+        student.setEmail("peng.bi@etu.univ-tours.fr");
+        student.setPassword("19931002");
+        student.setPhotoPath("");
+        student.setListProject(new ArrayList<Project>());
+        
+        em.persist(student);
+        transaction.commit();
 	}
 
 }
