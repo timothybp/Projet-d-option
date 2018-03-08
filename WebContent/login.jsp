@@ -5,43 +5,14 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Accueil</title>
-	<style>
-    *{
-        margin: 0;
-        padding: 0;
-    }
-    html,body { height: 100%;}
-    .wrap{
-        min-height: 100%;
-    }
-    .min{
-        padding-bottom: 60px;
-    }
-    header { 
-        height: 60px; 
-        background: #1381cc; 
-        color: #FFF; 
-        
-    }
-    section { 
-        background: #fff; 
-    }
-    footer { 
-        height:25px; 
-        margin-top: -25px; 
-        background: #0c4367; 
-        color: #FFF;
-        text-align:center;
-    }
-    
-</style>
+	<link href="css/header_footer.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
     <div class="wrap">
         <div class="min">
             <header>
-            	<img src="images/logo.png" height="100%" width="20%" />
+            	<img src="images/logo.png" height="100%" width="15%" />
             	<font size="6" color="white" style="position:relative;top:-20px;">Le système de choisir les projets</font>
             </header>
             <section class="content">

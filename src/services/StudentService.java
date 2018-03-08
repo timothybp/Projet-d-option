@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import daos.StudentDao;
+import models.Student;
 
 public class StudentService {
 	private StudentDao studentDao;
@@ -52,5 +53,25 @@ public class StudentService {
 			}
 		}
 		return true;
+	}
+	
+	public Student getStudentInfo(String username, EntityManager em) {
+		String idStudent = username.substring(0, username.length()-1);
+		String query = "SELECT student.name, student.surname, student.department, student.grade, student.photoPath" 
+				+ " FROM Student student"
+				+ " WHERE student.idStudent = " + idStudent;
+		List result = studentDao.select(query,em);
+		Object [] obj = (Object[])result.get(0);
+		
+		Student student = new Student();
+		student.setName((String)obj[0]);
+		student.setSurname((String)obj[1]);
+		student.setDepartment((String)obj[2]);
+		student.setGrade((Integer)obj[3]);
+		student.setPhotoPath((String)obj[4]);
+		
+		return student;
+		
+		
 	}
 }
