@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class Project {
 	
@@ -19,15 +21,15 @@ public class Project {
 	private Course course;
 	
 	@ManyToMany
-    @JoinTable(name="supervisor_project",  
-            joinColumns={@JoinColumn(name="idSupervisor")},  
-            inverseJoinColumns={@JoinColumn(name="idProject")})  
+    @JoinTable(name="project_supervisor",  
+            joinColumns={@JoinColumn(name="idProject")},  
+            inverseJoinColumns={@JoinColumn(name="idTeacher")})  
 	private List<Teacher> listTeacher;
 	
 	@ManyToMany
-    @JoinTable(name="student_project",  
-            joinColumns={@JoinColumn(name="idStudent")},  
-            inverseJoinColumns={@JoinColumn(name="idProject")})  
+    @JoinTable(name="project_student",  
+            joinColumns={@JoinColumn(name="idProject")},  
+            inverseJoinColumns={@JoinColumn(name="idStudent")})  
 	private List<Student> listStudent;
 
 	

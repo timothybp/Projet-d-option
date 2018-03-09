@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class Course {
 	
@@ -15,11 +17,12 @@ public class Course {
 	
 	private Date beginDate;
 	private Date endDate;
-	private int duration;
+	private int hours;
 	private int semester;
 	private int membreAmount;
-	private float weight;
+	private float weights;
 	private Date choosingDeadline;
+	private String schoolYear;
 	
 	@ManyToOne
     @JoinColumn(name="idResponsable")
@@ -61,12 +64,12 @@ public class Course {
 		this.endDate = endDate;
 	}
 
-	public int getDuration() {
-		return duration;
+	public int getHours() {
+		return hours;
 	}
 
-	public void setDuration(int duration) {
-		this.duration = duration;
+	public void setHours(int hours) {
+		this.hours = hours;
 	}
 
 	public int getSemester() {
@@ -85,12 +88,20 @@ public class Course {
 		this.membreAmount = membreAmount;
 	}
 
-	public float getWeight() {
-		return weight;
+	public float getWeights() {
+		return weights;
 	}
 
-	public void setWeight(float weight) {
-		this.weight = weight;
+	public void setWeights(float weights) {
+		this.weights = weights;
+	}
+
+	public String getSchoolYear() {
+		return schoolYear;
+	}
+
+	public void setSchoolYear(String schoolYear) {
+		this.schoolYear = schoolYear;
 	}
 
 	public Date getChoosingDeadline() {

@@ -53,6 +53,6 @@
             </section>
         </div>
     </div>
-    <footer class="footer"><p>© 2018 Développé par BI Peng &amp; ZENG Kai</p></footer>
+    <footer class="footer"><p>&copy; 2018 Développé par BI Peng &amp; ZENG Kai</p></footer>
 </body>
 </html>

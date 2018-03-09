@@ -2,22 +2,17 @@ package controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Date;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.JOptionPane;
 
-import daos.StudentDao;
-import models.Project;
 import models.Student;
 import services.AdministratorService;
+import services.CourseService;
 import services.StudentService;
 import services.TeacherService;
 
@@ -42,13 +37,15 @@ public class LoginServlet extends HttpServlet {
 		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		String role = request.getParameter("role");
 		
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		
 		//if the username and password are not empty
 		if(!username.equals("") && !password.equals("")) {
+			String role = request.getParameter("role");
+			CourseService courseService = new CourseService();
+			
 			//if the radio button is "Etudiant.e"
 			if(role.equals("student")){
 				StudentService studentService = new StudentService();
@@ -75,8 +72,16 @@ public class LoginServlet extends HttpServlet {
 					student = studentService.getStudentInfo(username, em);
 					request.setAttribute("name", student.getName());
 					request.setAttribute("surname", student.getSurname());
-					request.setAttribute("dept+grade", student.getDepartment()+String.valueOf(student.getGrade()));
+					request.setAttribute("department", student.getDepartment());
+					request.setAttribute("grade", String.valueOf(student.getGrade()));
 					request.setAttribute("photoPath", student.getPhotoPath());
+					
+					int firstSemester = student.getGrade() * 2 - 1;
+					request.setAttribute("firstSemester", String.valueOf(firstSemester));
+					request.setAttribute("courseListForFirstSemester", courseService.searchCourseForOneSemester(firstSemester, em));
+					int secondSemester = student.getGrade() * 2;
+					request.setAttribute("secondSemester", String.valueOf(secondSemester));
+					request.setAttribute("courseListForSecondSemester", courseService.searchCourseForOneSemester(secondSemester, em));
 					RequestDispatcher rd = request.getRequestDispatcher("/student_choose_project.jsp");
 			        rd.forward(request, response);
 				}
