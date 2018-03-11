@@ -1,6 +1,13 @@
 function courseName_clicked(jsonStr){
 	var newJsonStr = jsonStr.split("$").join("\"");
 	var jsonObj = JSON.parse(newJsonStr);
+	var memberAmount="";
+	if(parseInt(jsonObj.memberAmount) != 1) {
+		memberAmount = (parseInt(jsonObj.memberAmount) - 1).toString() + "-" + jsonObj.memberAmount + " personnes";
+	}
+	else {
+		memberAmount = jsonObj.memberAmount + " personne";
+	}
 	var content = "--Nom de cours: " + jsonObj.nom.split("^").join("'") + "<br/>" 
 					+ "--Responsable: " + jsonObj.responsable + "<br/>" 
 					+ "--Date de début: " + jsonObj.beginDate + "<br/>" 
@@ -8,7 +15,7 @@ function courseName_clicked(jsonStr){
 					+ "--Expiration de choix: " + jsonObj.choosingDeadline + "<br/>" 
 					+ "--Heures totales: " + jsonObj.heures + "H<br/>" 
 					+ "--Poids UE: " + jsonObj.poids + "<br/>" 
-					+ "--Nombre de membres de groupe: " + jsonObj.memberAmount + " personnes au plus";
+					+ "--Nombre de membres de groupe: " + memberAmount;
 	document.getElementById("u2").innerHTML=content;
 	document.getElementById("courseName").value=jsonObj.nom.replace("^", "'");
 	var tableCell = "<table class=\"gridtable\" style=\"width: 100%\">" +

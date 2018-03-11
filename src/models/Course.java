@@ -23,6 +23,7 @@ public class Course {
 	private float weights;
 	private Date choosingDeadline;
 	private String schoolYear;
+	private String department;
 	
 	@ManyToOne
     @JoinColumn(name="idResponsable")
@@ -99,17 +100,25 @@ public class Course {
 	public String getSchoolYear() {
 		return schoolYear;
 	}
-
-	public void setSchoolYear(String schoolYear) {
-		this.schoolYear = schoolYear;
-	}
-
+	
 	public Date getChoosingDeadline() {
 		return choosingDeadline;
 	}
 
 	public void setChoosingDeadline(Date choosingDeadline) {
 		this.choosingDeadline = choosingDeadline;
+	}
+	
+	public void setSchoolYear(String schoolYear) {
+		this.schoolYear = schoolYear;
+	}
+	
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 	
 	public Teacher getTeacher() {

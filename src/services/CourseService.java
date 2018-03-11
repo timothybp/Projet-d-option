@@ -23,13 +23,30 @@ public class CourseService {
 		em = courseDao.connect();
 	}
 	
-	public List<Course> searchCoursesForOneSemester(int semester) {
-		String query = "SELECT course.idCourse, course.nom, course.beginDate, course.endDate,"
-				+ " course.hours, course.membreAmount, course.weights,"
-				+ " course.choosingDeadline, course.teacher" 
-				+ " FROM Course course"
-				+ " WHERE course.semester = " + semester 
-				+ " AND course.schoolYear = '" + judgeSchoolYear() + "'";
+	public List<Course> searchCourses(String attributeName, String attributeValue) {
+		String query = "";
+		if(attributeName.equals("semester")){
+			String semester = attributeValue.split("-")[0];
+			String department = attributeValue.split("-")[1];
+			query = "SELECT course.idCourse, course.nom, course.beginDate, course.endDate,"
+					+ " course.hours, course.membreAmount, course.weights, course.choosingDeadline,"
+					+ " course.semester, course.department, course.teacher" 
+					+ " FROM Course course"
+					+ " WHERE course.semester = " + semester
+					+ " AND course.department = '" + department + "'"
+					+ " AND course.schoolYear = '" + judgeSchoolYear() + "'";
+		}
+		
+		if(attributeName.equals("nom")){
+			String nom = attributeValue;
+			query = "SELECT course.idCourse, course.nom, course.beginDate, course.endDate,"
+					+ " course.hours, course.membreAmount, course.weights, course.choosingDeadline,"
+					+ " course.semester, course.department, course.teacher" 
+					+ " FROM Course course"
+					+ " WHERE course.nom = '" + nom + "'"
+					+ " AND course.schoolYear = '" + judgeSchoolYear() + "'";
+		}
+		
 		List result = courseDao.select(query,em);
 		
 		List<Course> listCourse = new ArrayList<Course>();
@@ -45,10 +62,11 @@ public class CourseService {
 			course.setMembreAmount((Integer)obj[5]);
 			course.setWeights((Float)obj[6]);
 			course.setChoosingDeadline(convertDateFormat((Date)obj[7]));
-			course.setTeacher((Teacher)obj[8]);
-			course.setSemester(semester);
+			course.setSemester((Integer)obj[8]);
+			course.setDepartment((String)obj[9]);
+			course.setTeacher((Teacher)obj[10]);
 			course.setSchoolYear(judgeSchoolYear());
-			course.setListProject(projectService.searchProjectsForOneCourse((String)obj[0]));
+			course.setListProject(projectService.searchProjectsForOneCourse("idCourse",(String)obj[0]));
 			listCourse.add(course);
 		}
 		return listCourse;

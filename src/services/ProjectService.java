@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import daos.ProjectDao;
+import models.Course;
 import models.Project;
 import models.Student;
 import models.Teacher;
@@ -20,11 +21,24 @@ public class ProjectService {
 		em = projectDao.connect();
 	}
 	
-	public List<Project> searchProjectsForOneCourse(String courseId) {		
-		String query = "SELECT project.idProject, project.subject,"
-				+ " project.description, project.enterprise"
-				+ " FROM Project project JOIN project.course course"
-				+ " WHERE course.idCourse = '" + courseId + "'" ;
+	public List<Project> searchProjectsForOneCourse(String AttributeName, String AttributeValue) {		
+		String query = "";
+		if(AttributeName.equals("idCourse")){
+			String idCourse = AttributeValue;
+			query = "SELECT project.idProject, project.subject,"
+					+ " project.description, project.enterprise, course.idCourse"
+					+ " FROM Project project JOIN project.course course"
+					+ " WHERE course.idCourse = '" + idCourse + "'" ;
+		}
+		
+		if(AttributeName.equals("idProject")){
+			String idProject = AttributeValue;
+			query = "SELECT project.idProject, project.subject,"
+					+ " project.description, project.enterprise, course.idCourse"
+					+ " FROM Project project JOIN project.course course"
+					+ " WHERE project.idProject = " + idProject;
+		}
+		
 		List resultProject = projectDao.select(query,em);
 		List<Project> listProject = new ArrayList<Project>();
 		for(int i = 0; i < resultProject.size(); i++){
@@ -34,6 +48,10 @@ public class ProjectService {
 			project.setSubject((String)obj1[1]);
 			project.setDescription((String)obj1[2]);
 			project.setEnterprise((String)obj1[3]);
+			
+			Course course = new Course();
+			course.setIdCourse((String)obj1[4]);
+			project.setCourse(course);
 			
 			query = "SELECT teacher.idTeacher, teacher.name, teacher.surname"
 					+ " FROM Project project JOIN project.listTeacher teacher"

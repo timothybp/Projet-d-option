@@ -1,5 +1,6 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -51,21 +52,42 @@ public class StudentService {
 		return true;
 	}
 	
-	public Student getStudentInfo(String username) {
-		String idStudent = username.substring(0, username.length()-1);
-		String query = "SELECT student.name, student.surname, student.department, student.grade, student.photoPath" 
-				+ " FROM Student student"
-				+ " WHERE student.idStudent = " + idStudent;
+	public List<Student> getStudentInfo(String attributeName, String attributeValue) {
+		String query = "";
+		
+		if(attributeName.equals("idStudent")){
+			String idStudent = attributeValue;
+			query = "SELECT student.idStudent, student.name, student.surname, student.department, student.grade, student.photoPath" 
+					+ " FROM Student student"
+					+ " WHERE student.idStudent = " + idStudent;
+		}
+		
+		if(attributeName.equals("wholeName")){
+			String name = attributeValue.split("_")[0];
+			String surname = attributeValue.split("_")[1];
+			query = "SELECT student.idStudent, student.name, student.surname, student.department, student.grade, student.photoPath" 
+					+ " FROM Student student"
+					+ " WHERE student.name = '" + name + "'"
+					+ " AND student.surname = '" + surname + "'";
+		}
+		
 		List result = studentDao.select(query,em);
-		Object [] obj = (Object[])result.get(0);
 		
-		Student student = new Student();
-		student.setName((String)obj[0]);
-		student.setSurname((String)obj[1]);
-		student.setDepartment((String)obj[2]);
-		student.setGrade((Integer)obj[3]);
-		student.setPhotoPath((String)obj[4]);
+		List<Student> listStudent = new ArrayList<Student>();
+		for(int i = 0; i < result.size(); i++){
+			Object [] obj = (Object[])result.get(i);
+			
+			Student student = new Student();
+			student.setIdStudent((Long)obj[0]);
+			student.setName((String)obj[1]);
+			student.setSurname((String)obj[2]);
+			student.setDepartment((String)obj[3]);
+			student.setGrade((Integer)obj[4]);
+			student.setPhotoPath((String)obj[5]);
+			listStudent.add(student);
+		}
 		
-		return student;
+		
+		return listStudent;
 	}
 }

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import daos.StudentDao;
 import models.Project;
 import models.Student;
 import services.AdministratorService;
@@ -41,13 +42,11 @@ public class LoginServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		
-		response.setContentType("text/html;charset=utf-8");
-		PrintWriter out = response.getWriter();
+		String errorMessage = "";
 		
 		//if the username and password are not empty
 		if(!username.equals("") && !password.equals("")) {
 			String role = request.getParameter("role");
-			CourseService courseService = new CourseService();
 			
 			//if the radio button is "Etudiant.e"
 			if(role.equals("student")){
@@ -56,34 +55,17 @@ public class LoginServlet extends HttpServlet {
 				//verify the authentification of login
 				int resultVerification = studentService.verifyLogin(username, password);
 				if(resultVerification == 1) {
-					out.print("<script>");
-					out.print("alert(\"Erreur: Le nom d'utilisateur n'existe pas dans le rôle [Etudiant.e]!\");");
-					out.print("window.location.href=\"/DistributionDeProjets/login.jsp\"");
-					out.print("</script>");
+					errorMessage = "Erreur: Le nom d'utilisateur n'existe pas dans le rôle [Etudiant.e]!";
+					stayOnLoginPage(errorMessage,request,response);
 				}
 				else if(resultVerification == 2) {
-					out.print("<script>");
-					out.print("alert(\"Erreur: Le mot de passe n'est pas correct!\");");
-					out.print("window.location.href=\"/DistributionDeProjets/login.jsp\"");
-					out.print("</script>");
+					errorMessage = "Erreur: Le mot de passe n'est pas correct!";
+					stayOnLoginPage(errorMessage,request,response);
 				}
 				else {
 					Student student = new Student();
-					student = studentService.getStudentInfo(username);
-					request.setAttribute("name", student.getName());
-					request.setAttribute("surname", student.getSurname());
-					request.setAttribute("department", student.getDepartment());
-					request.setAttribute("grade", String.valueOf(student.getGrade()));
-					request.setAttribute("photoPath", student.getPhotoPath());
-					
-					int firstSemester = student.getGrade() * 2 - 1;
-					request.setAttribute("firstSemester", String.valueOf(firstSemester));
-					request.setAttribute("courseListForFirstSemester", courseService.searchCoursesForOneSemester(firstSemester));
-					int secondSemester = student.getGrade() * 2;
-					request.setAttribute("secondSemester", String.valueOf(secondSemester));
-					request.setAttribute("courseListForSecondSemester", courseService.searchCoursesForOneSemester(secondSemester));
-					RequestDispatcher rd = request.getRequestDispatcher("/student_choose_project.jsp");
-			        rd.forward(request, response);
+					student = studentService.getStudentInfo("idStudent",username.substring(0, username.length()-1)).get(0);
+					redirectToStudentChooseProjectPage(student, studentService, request, response);
 				}
 			}
 			//if the radio button is "Professeur"
@@ -93,16 +75,12 @@ public class LoginServlet extends HttpServlet {
 				//verify the authentification of login
 				int resultVerification = teacherService.verifyLogin(username, password);
 				if(resultVerification == 1) {
-					out.print("<script>");
-					out.print("alert(\"Erreur: Le nom d'utilisateur n'existe pas dans le rôle [Professeur]!\");");
-					out.print("window.location.href=\"/DistributionDeProjets/login.jsp\"");
-					out.print("</script>");
+					errorMessage = "Erreur: Le nom d'utilisateur n'existe pas dans le rôle [Professeur]!";
+					stayOnLoginPage(errorMessage,request,response);
 				}
 				else if(resultVerification == 2) {
-					out.print("<script>");
-					out.print("alert(\"Erreur: Le mot de passe n'est pas correct!\");");
-					out.print("window.location.href=\"/DistributionDeProjets/login.jsp\"");
-					out.print("</script>");
+					errorMessage = "Erreur: Le mot de passe n'est pas correct!";
+					stayOnLoginPage(errorMessage,request,response);
 				}
 				else {
 					response.sendRedirect("/DistributionDeProjets/teacher_home.jsp");
@@ -115,16 +93,12 @@ public class LoginServlet extends HttpServlet {
 				//verify the authentification of login
 				int resultVerification = administratorService.verifyLogin(username, password);
 				if(resultVerification == 1) {
-					out.print("<script>");
-					out.print("alert(\"Erreur: Le nom d'utilisateur n'existe pas dans le rôle [Administrateur]!\");");
-					out.print("window.location.href=\"/DistributionDeProjets/login.jsp\"");
-					out.print("</script>");
+					errorMessage = "Erreur: Le nom d'utilisateur n'existe pas dans le rôle [Administrateur]!";
+					stayOnLoginPage(errorMessage,request,response);
 				}
 				else if(resultVerification == 2) {
-					out.print("<script>");
-					out.print("alert(\"Erreur: Le mot de passe n'est pas correct!\");");
-					out.print("window.location.href=\"/DistributionDeProjets/login.jsp\"");
-					out.print("</script>");
+					errorMessage = "Erreur: Le mot de passe n'est pas correct!";
+					stayOnLoginPage(errorMessage,request,response);
 				}
 				else {
 					response.sendRedirect("/DistributionDeProjets/admin_home.jsp");
@@ -132,10 +106,8 @@ public class LoginServlet extends HttpServlet {
 			}
 		}
 		else {
-			out.print("<script>");
-			out.print("alert(\"Erreur: Le nom d'utilisateur et le mot de passe ne peuvent pas être vides!\");");
-			out.print("window.location.href=\"/DistributionDeProjets/login.jsp\"");
-			out.print("</script>");
+			errorMessage = "Erreur: Le nom d'utilisateur et le mot de passe ne peuvent pas être vides!";
+			stayOnLoginPage(errorMessage,request, response);
 		}
 	}
 	
@@ -146,5 +118,46 @@ public class LoginServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
+	
+	public void stayOnLoginPage(String errorMessage, HttpServletRequest request, HttpServletResponse response){
+		response.setContentType("text/html;charset=utf-8");
+		try {
+			PrintWriter out = response.getWriter();
+			out.print("<script>");
+			out.print("alert(\"" + errorMessage + "\");");
+			out.print("window.location.href=\"/DistributionDeProjets/login.jsp\"");
+			out.print("</script>");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void redirectToStudentChooseProjectPage(Student student, StudentService studentService,
+			HttpServletRequest request, HttpServletResponse response){
+		
+		request.setAttribute("name", student.getName());
+		request.setAttribute("surname", student.getSurname());
+		request.setAttribute("department", student.getDepartment());
+		request.setAttribute("grade", String.valueOf(student.getGrade()));
+		request.setAttribute("photoPath", student.getPhotoPath());
+		
+		CourseService courseService = new CourseService();
+		int firstSemester = student.getGrade() * 2 - 1;
+		request.setAttribute("firstSemester", String.valueOf(firstSemester));
+		request.setAttribute("courseListForFirstSemester", courseService.searchCourses("semester", String.valueOf(firstSemester)+"-"+student.getDepartment()));
+		int secondSemester = student.getGrade() * 2;
+		request.setAttribute("secondSemester", String.valueOf(secondSemester));
+		request.setAttribute("courseListForSecondSemester", courseService.searchCourses("semester", String.valueOf(secondSemester)+"-"+student.getDepartment()));
+		RequestDispatcher rd = request.getRequestDispatcher("/student_choose_project.jsp");
+        try {
+			rd.forward(request, response);
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
