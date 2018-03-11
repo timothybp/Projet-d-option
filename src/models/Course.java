@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Course {
 	
 	@Id
-	private int idCourse;
+	private String idCourse;
 	
 	private String nom;
 	
@@ -32,11 +32,11 @@ public class Course {
 	private List<Project> listProject;
 	
 	
-	public int getIdCourse() {
+	public String getIdCourse() {
 		return idCourse;
 	}
 
-	public void setIdCourse(int idCourse) {
+	public void setIdCourse(String idCourse) {
 		this.idCourse = idCourse;
 	}
 

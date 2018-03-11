@@ -9,19 +9,15 @@ import models.Student;
 
 public class StudentService {
 	private StudentDao studentDao;
+	private EntityManager em;
 	
 	public StudentService() {
 		studentDao = new StudentDao();
-	}
-	
-	//connect database
-	public EntityManager connectDatabase() {
-		EntityManager em = studentDao.connect();
-		return em;
+		em = studentDao.connect();
 	}
 	
 	//verify if the student can successfully login
-	public int verifyLogin(String username, String password, EntityManager em) {
+	public int verifyLogin(String username, String password) {
 		String idStudent = username.substring(0, username.length()-1);
 		if (idStudent.length() == 0 || (idStudent.length() != 0 && isNumeric(idStudent) == false)) {
 			return 1;
@@ -55,7 +51,7 @@ public class StudentService {
 		return true;
 	}
 	
-	public Student getStudentInfo(String username, EntityManager em) {
+	public Student getStudentInfo(String username) {
 		String idStudent = username.substring(0, username.length()-1);
 		String query = "SELECT student.name, student.surname, student.department, student.grade, student.photoPath" 
 				+ " FROM Student student"
@@ -71,7 +67,5 @@ public class StudentService {
 		student.setPhotoPath((String)obj[4]);
 		
 		return student;
-		
-		
 	}
 }

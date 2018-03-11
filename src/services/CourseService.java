@@ -16,12 +16,14 @@ import models.Teacher;
 public class CourseService {
 	
 	private CourseDao courseDao;
+	private EntityManager em;
 	
 	public CourseService() {
 		courseDao = new CourseDao();
+		em = courseDao.connect();
 	}
 	
-	public List<Course> searchCourseForOneSemester(int semester, EntityManager em) {
+	public List<Course> searchCoursesForOneSemester(int semester) {
 		String query = "SELECT course.idCourse, course.nom, course.beginDate, course.endDate,"
 				+ " course.hours, course.membreAmount, course.weights,"
 				+ " course.choosingDeadline, course.teacher" 
@@ -31,10 +33,11 @@ public class CourseService {
 		List result = courseDao.select(query,em);
 		
 		List<Course> listCourse = new ArrayList<Course>();
+		ProjectService projectService = new ProjectService();
 		for(int i = 0; i < result.size(); i++ ) {
 			Course course = new Course();
 			Object [] obj = (Object[])result.get(i);
-			course.setIdCourse((Integer)obj[0]);
+			course.setIdCourse((String)obj[0]);
 			course.setNom((String)obj[1]);
 			course.setBeginDate(convertDateFormat((Date)obj[2]));
 			course.setEndDate(convertDateFormat((Date)obj[3]));
@@ -45,7 +48,7 @@ public class CourseService {
 			course.setTeacher((Teacher)obj[8]);
 			course.setSemester(semester);
 			course.setSchoolYear(judgeSchoolYear());
-			course.setListProject(new ArrayList<Project>());
+			course.setListProject(projectService.searchProjectsForOneCourse((String)obj[0]));
 			listCourse.add(course);
 		}
 		return listCourse;
@@ -67,7 +70,7 @@ public class CourseService {
 	}
 	
 	public Date convertDateFormat(Date dateTime) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String formatDate = sdf.format(dateTime);  
 		Date date = null;
 		try {

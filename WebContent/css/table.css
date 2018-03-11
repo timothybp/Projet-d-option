@@ -1,0 +1,21 @@
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+	word-wrap:break-word;
+	table-layout:fixed;
+}
+table.gridtable th, table.gridtable td{
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+}
+table.gridtable tr.pair{ 
+background-color:#b6ddf3; 
+}
+table.gridtable tr.header{
+background-color:#7dcdfb; 
+} 

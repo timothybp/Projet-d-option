@@ -7,20 +7,16 @@ import javax.persistence.EntityManager;
 import daos.TeacherDao;
 
 public class AdministratorService {
-private TeacherDao teacherDao;
+	private TeacherDao teacherDao;
+	private EntityManager em;
 	
 	public AdministratorService() {
 		teacherDao = new TeacherDao();
+		em = teacherDao.connect();
 	}
-	
-	//connect database
-	public EntityManager connectDatabase() {
-		EntityManager em = teacherDao.connect();
-		return em;
-	}
-	
+
 	//verify if the administrator can successfully login
-	public int verifyLogin(String username, String password, EntityManager em) {
+	public int verifyLogin(String username, String password) {
 		String idTeacher = username.substring(0, username.length()-1);
 		if (idTeacher.length() == 0 || (idTeacher.length() != 0 && isNumeric(idTeacher) == false)) {
 			return 1;

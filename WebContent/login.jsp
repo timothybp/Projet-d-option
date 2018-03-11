@@ -5,13 +5,12 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Accueil</title>
-	<link href="css/header_footer.css" rel="stylesheet" type="text/css" />
+    <link href="css/header_footer.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
-    <div class="wrap">
-        <div class="min">
-            <header>
+    <div id="container" class="wrap">
+    	<header>
             	<img src="images/logo.png" height="100%" width="15%" />
             	<font size="6" color="white" style="position:relative;top:-20px;">Le système de choisir les projets</font>
             </header>
@@ -51,8 +50,8 @@
                 	<font size="2" color="red"><i>( Le nom d'utilisateur est votre numéro avec la lettre "t", ex: 21800000t )</i></font>
         		</div>
             </section>
-        </div>
+            <footer class="footer"><p>&copy; 2018 Développé par BI Peng &amp; ZENG Kai</p></footer>
     </div>
-    <footer class="footer"><p>&copy; 2018 Développé par BI Peng &amp; ZENG Kai</p></footer>
+    
 </body>
 </html>
