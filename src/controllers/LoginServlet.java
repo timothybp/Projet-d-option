@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -13,9 +14,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.util.URLEncoder;
+
 import daos.StudentDao;
 import models.Project;
 import models.Student;
+import models.Teacher;
+import net.sf.json.JSONObject;
 import services.AdministratorService;
 import services.CourseService;
 import services.StudentService;
@@ -65,7 +70,7 @@ public class LoginServlet extends HttpServlet {
 				else {
 					Student student = new Student();
 					student = studentService.getStudentInfo("idStudent",username.substring(0, username.length()-1)).get(0);
-					redirectToStudentChooseProjectPage(student, studentService, request, response);
+					redirectToStudentChooseProjectPage(student, request, response);
 				}
 			}
 			//if the radio button is "Professeur"
@@ -83,7 +88,9 @@ public class LoginServlet extends HttpServlet {
 					stayOnLoginPage(errorMessage,request,response);
 				}
 				else {
-					response.sendRedirect("/DistributionDeProjets/teacher_home.jsp");
+					Teacher teacher = new Teacher();
+					teacher = teacherService.getTeacherInfo("idTeacher", username.substring(0, username.length()-1)).get(0);
+					redirectToTeacherHomePage(teacher, request, response);
 				}
 			}
 			
@@ -101,7 +108,9 @@ public class LoginServlet extends HttpServlet {
 					stayOnLoginPage(errorMessage,request,response);
 				}
 				else {
-					response.sendRedirect("/DistributionDeProjets/admin_home.jsp");
+					Teacher teacher = new Teacher();
+					teacher = administratorService.getAdministratorInfo("idTeacher", username.substring(0, username.length()-1)).get(0);
+					redirectToAdministratorHomePage(teacher, request, response);
 				}
 			}
 		}
@@ -133,7 +142,7 @@ public class LoginServlet extends HttpServlet {
 		}
 	}
 	
-	public void redirectToStudentChooseProjectPage(Student student, StudentService studentService,
+	public void redirectToStudentChooseProjectPage(Student student,
 			HttpServletRequest request, HttpServletResponse response){
 		
 		request.setAttribute("name", student.getName());
@@ -160,4 +169,61 @@ public class LoginServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
+	
+
+    public void redirectToTeacherHomePage(Teacher teacher,
+    		HttpServletRequest request, HttpServletResponse response) {
+    	
+    	JSONObject jsonObj = new JSONObject();
+    	jsonObj.put("name", teacher.getName());
+    	jsonObj.put("surname", teacher.getSurname());
+    	jsonObj.put("department", teacher.getDepartment());
+    	jsonObj.put("photoPath", teacher.getPhotoPath());
+    	
+    	String jsonStr = "";
+		try {
+			jsonStr = java.net.URLEncoder.encode(String.valueOf(jsonObj),java.nio.charset.StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	response.setContentType("text/html;charset=utf-8");
+		try {
+			PrintWriter out = response.getWriter();
+			out.print("<script>");
+			out.print("window.location.href=\"/DistributionDeProjets/teacher_home.jsp?jsonStrEnc="+jsonStr+"\"");
+			out.print("</script>");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void redirectToAdministratorHomePage(Teacher teacher,
+    		HttpServletRequest request, HttpServletResponse response) {
+    	
+    	JSONObject jsonObj = new JSONObject();
+    	jsonObj.put("name", teacher.getName());
+    	jsonObj.put("surname", teacher.getSurname());
+    	jsonObj.put("department", teacher.getDepartment());
+    	jsonObj.put("photoPath", teacher.getPhotoPath());
+    	
+    	String jsonStr = "";
+		try {
+			jsonStr = java.net.URLEncoder.encode(String.valueOf(jsonObj),java.nio.charset.StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	response.setContentType("text/html;charset=utf-8");
+		try {
+			PrintWriter out = response.getWriter();
+			out.print("<script>");
+			out.print("window.location.href=\"/DistributionDeProjets/admin_home.jsp?jsonStrEnc="+jsonStr+"\"");
+			out.print("</script>");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 }

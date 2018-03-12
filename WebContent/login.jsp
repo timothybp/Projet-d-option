@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <title>Accueil</title>
+    <title>Connexion</title>
     <link href="css/header_footer.css" rel="stylesheet" type="text/css" />
 </head>
 

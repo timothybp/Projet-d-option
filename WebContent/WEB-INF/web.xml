@@ -28,4 +28,22 @@
     <servlet-name>choose</servlet-name>
     <url-pattern>/choose_project</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>visualize</servlet-name>
+    <servlet-class>controllers.VisualizeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>visualize</servlet-name>
+    <url-pattern>/visualize_my_project</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>propose</servlet-name>
+    <servlet-class>controllers.ProposeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>propose</servlet-name>
+    <url-pattern>/propose_new_project</url-pattern>
+  </servlet-mapping>
 </web-app>

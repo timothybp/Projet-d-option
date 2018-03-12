@@ -1,10 +1,14 @@
 package services;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
 import daos.TeacherDao;
+import models.Student;
+import models.Teacher;
 
 public class TeacherService {
 	private TeacherDao teacherDao;
@@ -48,5 +52,34 @@ public class TeacherService {
 			}
 		}
 		return true;
+	}
+	
+	public List<Teacher> getTeacherInfo(String attributeName, String attributeValue) {
+		String query = "";
+		
+		if(attributeName.equals("idTeacher")){
+			String idTeacher = attributeValue;
+			query = "SELECT teacher.idTeacher, teacher.name, teacher.surname,"
+					+ " teacher.department, teacher.role, teacher.photoPath" 
+					+ " FROM Teacher teacher"
+					+ " WHERE teacher.idTeacher = " + idTeacher;
+		}
+		
+		List resultTeacher = teacherDao.select(query,em);
+		
+		List<Teacher> listTeacher = new ArrayList<Teacher>();
+		for(int i = 0; i < resultTeacher.size(); i++){
+			Object [] obj = (Object[])resultTeacher.get(i);
+			
+			Teacher teacher = new Teacher();
+			teacher.setIdTeacher((Long)obj[0]);
+			teacher.setName((String)obj[1]);
+			teacher.setSurname((String)obj[2]);
+			teacher.setDepartment((String)obj[3]);
+			teacher.setRole((String)obj[4]);
+			teacher.setPhotoPath((String)obj[5]);
+			listTeacher.add(teacher);
+		}
+		return listTeacher;
 	}
 }

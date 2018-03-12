@@ -180,7 +180,7 @@ public class ChooseServlet extends HttpServlet {
 			JOptionPane.showMessageDialog(null, messageContent,"Succ¨¨s",JOptionPane.INFORMATION_MESSAGE); 
 	
 		LoginServlet loginServlet = new LoginServlet();
-		loginServlet.redirectToStudentChooseProjectPage(student, studentService, request, response);
+		loginServlet.redirectToStudentChooseProjectPage(student, request, response);
 	}
 	
 	public boolean judgeStudentExistInFile(long idStudent, String filename){

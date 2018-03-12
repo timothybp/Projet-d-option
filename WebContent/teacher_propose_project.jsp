@@ -11,7 +11,6 @@
     <title>Professeur</title>
     <link href="css/header_footer.css" rel="stylesheet" type="text/css" />
     <link href="css/menuBar.css" rel="stylesheet" type="text/css" />
-    <link href="css/table.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -23,7 +22,7 @@
 		String department = jsonObj.getString("department");
 		String photoPath = jsonObj.getString("photoPath");
 		
-		String jsonStrEnc = URLEncoder.encode(jsonStrDec, java.nio.charset.StandardCharsets.UTF_8.toString());
+		String jsonStrEnc = URLEncoder.encode(jsonObj.toString(), java.nio.charset.StandardCharsets.UTF_8.toString());
     %>
             		
     <div id="container" class="wrap">
@@ -54,14 +53,24 @@
 			<div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:80px;text-align:center;">
-                <h1>Visualisation de vos projets</h1>
+                <h1>Proposition d'un nouveau projet</h1>
         	</div>
         	
         	<div id="u1" style="position:relative;top:120px;text-align:center;">
-        		<form action="visualize_my_project" method="post">
-        		<p>
-        			<label>Consulter vos projets par:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-					<select style="width:200px" name="indicatorType">
+        		<form action="propose_new_project" method="post">
+        			<font style="color: red;">*</font>
+        			Sujet: &nbsp;&nbsp;&nbsp;&nbsp; <input type="text" name="subject" style="width:520px">
+        			<br><br>
+        			Description: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="description" style="width:490px">
+        			<br><br>
+        			<font style="color: red;">*</font>
+        			Encadrants: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="supervisor" style="width:485px"
+        														value=<%=name+"_"+surname %>>
+        			<br><br>
+        			<p>
+        			<font style="color: red;">*</font>
+        			Cours: &nbsp;&nbsp;&nbsp;&nbsp;
+        			<select style="width:150px">
   						<option value ="all">Tous</option>
   						<option value ="idProject">Id de projet</option>
   						<option value="nom">Nom de sujet</option>
@@ -70,34 +79,25 @@
   						<option value="endYear">Année de fin</option>
 					</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="text" name="indicatorValue" style="width:250px">
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="submit" value="Rechercher" style="width:100px">
-				</p>
-			</form>
+        			Entreprise: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="enterprise" style="width:250px">
+        			</p>
+        			<br><br>
+        			<input type="submit" value="Soumettre" style="height:25px;width:100px">
+        		</form>
+        		<br><br>
         	</div>
-			
-			<div id="u3" style="position:relative;text-align:center;left:12px;top:150px;width:98%;">
-				<table class="gridtable" style="width: 100%;">
-        			<tr class="header">
-        				<th width="50">Numéro</th>
-        				<th width="50">Id</th>
-        				<th width="200">Sujet</th>
-        				<th>Description</th>
-        				<th width="100">Encadrant.e.s</th>
-        				<th width="70">Entreprise</th>
-        				<th width="60">Nom de course</th>
-        				<th width="60">Semester</th>
-        				<th width="60">Année scolaire</th>
-        				<th width="60">Date de début</th>
-        				<th width="60">Date de fin</th>
-        				<th width="80">Etudiant.e.s</th>
-        			</tr>
-        			<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
-        				<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-        	</table>
-			</div>
-			
+        	
+        	<div id="u3" class="remindMessage" style="position:relative;top:100px;left:340px;
+        		width:47%;background:#F0F8FF">
+        	<font size="3" style="font-weight:bold;font-style:italic;">Attention:<br></font><br>
+        	<font size="3" style="font-style:italic;">1) Les champs de texte marqués</font>
+        	<font size="3" style="color:red; font-weight:bold;font-style:italic;">*</font>
+        	<font size="3" style="font-style:italic;">sont obligatoires de remplir<br><br></font>
+        	<font size="3" style="font-style:italic;">2) Le format de noms des encadrants: </font>
+        	<font size="3" style="color: red; font-weight:bold;font-style:italic;">Prénom1_NOM1; Prénom2_NOM2; ...<br><br></font>
+			<font size="3" style="font-style:italic;">3) Les noms des encadrants se séparent par</font>
+        	<font size="3" style="color: red; font-weight:bold;font-style:italic;">";"<br></font>
+        	</div>
         </section>
         <footer class="footer"><p>&copy; 2018 Développé par BI Peng &amp; ZENG Kai</p></footer>
     </div>
