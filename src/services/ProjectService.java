@@ -1,6 +1,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -55,7 +56,7 @@ public class ProjectService {
 			
 			query = "SELECT teacher.idTeacher, teacher.name, teacher.surname"
 					+ " FROM Project project JOIN project.listTeacher teacher"
-					+ " WHERE project.idProject = " + project.getIdProject();
+					+ " WHERE project.idProject = " + String.valueOf(project.getIdProject());
 			List resultTeacher = projectDao.select(query,em);
 			List<Teacher> listTeacher = new ArrayList<Teacher>();
 			for(int j = 0; j < resultTeacher.size(); j++) {
@@ -69,7 +70,7 @@ public class ProjectService {
 			
 			query = "SELECT student.idStudent, student.name, student.surname"
 					+ " FROM Project project JOIN project.listStudent student"
-					+ " WHERE project.idProject = " + project.getIdProject();
+					+ " WHERE project.idProject = " + String.valueOf(project.getIdProject());
 			List resultStudent = projectDao.select(query,em);
 			List<Student> listStudent = new ArrayList<Student>();
 			for(int k = 0; k < resultStudent.size(); k++) {
@@ -83,6 +84,127 @@ public class ProjectService {
 			
 			project.setListTeacher(listTeacher);
 			project.setListStudent(listStudent);
+			listProject.add(project);
+		}
+		return listProject;
+	}
+	
+	public List<Project> ViewMyOwnProjets(String attechement, String idTeacher) {
+		String query = "";
+		String indicatorType = attechement.split("_")[0];
+		String indicatorValue = attechement.split("_")[1];
+		
+		if(indicatorType.equals("all")){
+			query = "SELECT project.idProject, project.subject,"
+					+ " project.description, project.enterprise"
+					+ " FROM Project project JOIN project.listTeacher teacher"
+					+ " WHERE teacher.idTeacher = " + idTeacher;
+		}
+		
+		if(indicatorType.equals("idProject")) {
+			String idProject = indicatorValue;
+			query = "SELECT project.idProject, project.subject,"
+					+ " project.description, project.enterprise"
+					+ " FROM Project project JOIN project.listTeacher teacher"
+					+ " WHERE teacher.idTeacher = " + idTeacher
+					+ " AND project.idProject = " + idProject;
+		}
+		
+		if(indicatorType.equals("subject")) {
+			String subject = indicatorValue;
+			query = "SELECT project.idProject, project.subject,"
+					+ " project.description, project.enterprise"
+					+ " FROM Project project JOIN project.listTeacher teacher"
+					+ " WHERE teacher.idTeacher = " + idTeacher
+					+ " AND project.subject = '" + subject + "'";
+		}
+		
+		if(indicatorType.equals("semester")) {
+			String semester = indicatorValue;
+			query = "SELECT project.idProject, project.subject,"
+					+ " project.description, project.enterprise"
+					+ " FROM Project project JOIN project.listTeacher teacher"
+					+ " JOIN project.course course"
+					+ " WHERE teacher.idTeacher = " + idTeacher
+					+ " AND course.semester = " + semester;
+		}
+		
+		if(indicatorType.equals("startYear")) {
+			String startYear = indicatorValue;
+			query = "SELECT project.idProject, project.subject,"
+					+ " project.description, project.enterprise"
+					+ " FROM Project project JOIN project.listTeacher teacher"
+					+ " JOIN project.course course"
+					+ " WHERE teacher.idTeacher = " + idTeacher
+					+ " AND DATE(course.beginDate) LIKE '%" + startYear + "%'";
+		}
+		
+		if(indicatorType.equals("endYear")) {
+			String endYear = indicatorValue;
+			query = "SELECT project.idProject, project.subject,"
+					+ " project.description, project.enterprise"
+					+ " FROM Project project JOIN project.listTeacher teacher"
+					+ " JOIN project.course course"
+					+ " WHERE teacher.idTeacher = " + idTeacher
+					+ " AND DATE(course.endDate) LIKE '%" + endYear + "%'";
+		}
+		
+		List resultProject = projectDao.select(query,em);
+		List<Project> listProject = new ArrayList<Project>();
+		for(int i = 0; i < resultProject.size(); i++){
+			Project project = new Project();
+			Object [] obj1 = (Object[])resultProject.get(i);
+			project.setIdProject((Integer)obj1[0]);
+			project.setSubject((String)obj1[1]);
+			project.setDescription((String)obj1[2]);
+			project.setEnterprise((String)obj1[3]);
+			
+			query = "SELECT teacher.idTeacher, teacher.name, teacher.surname"
+					+ " FROM Project project JOIN project.listTeacher teacher"
+					+ " WHERE project.idProject = " + String.valueOf(project.getIdProject());
+			List resultTeacher = projectDao.select(query,em);
+			List<Teacher> listTeacher = new ArrayList<Teacher>();
+			for(int j = 0; j < resultTeacher.size(); j++) {
+				Teacher teacher = new Teacher();
+				Object [] obj2 = (Object[])resultTeacher.get(j);
+				teacher.setIdTeacher((Integer)obj1[0]);
+				teacher.setName((String)obj2[1]);
+				teacher.setSurname((String)obj2[2]);
+				listTeacher.add(teacher);
+			}
+			
+			query = "SELECT student.idStudent, student.name, student.surname"
+					+ " FROM Project project JOIN project.listStudent student"
+					+ " WHERE project.idProject = " + String.valueOf(project.getIdProject());
+			List resultStudent = projectDao.select(query,em);
+			List<Student> listStudent = new ArrayList<Student>();
+			for(int k = 0; k < resultStudent.size(); k++) {
+				Student student = new Student();
+				Object [] obj3 = (Object[])resultStudent.get(i);
+				student.setIdStudent((Integer)obj3[0]);
+				student.setName((String)obj3[1]);
+				student.setSurname((String)obj3[2]);
+				listStudent.add(student);
+			}
+			
+			query = "SELECT course.idCourse, course.nom, course.semester, course.schoolYear,"
+					+ " course.beginDate, course.endDate"
+					+ " FROM Project project JOIN project.course course"
+					+ " WHERE project.idProject = " + String.valueOf(project.getIdProject());
+			List resultCourse = projectDao.select(query,em);
+			Course course = new Course();
+			Object [] obj4 = (Object[])resultCourse.get(0);
+			course.setIdCourse((String)obj4[0]);
+			course.setNom((String)obj4[1]);
+			course.setSemester((Integer)obj4[2]);
+			course.setSchoolYear((String)obj4[3]);
+			CourseService courseService = new CourseService();
+			course.setBeginDate(courseService.convertDateFormat((Date)obj4[4]));
+			course.setEndDate(courseService.convertDateFormat((Date)obj4[5]));
+			
+			project.setListTeacher(listTeacher);
+			project.setListStudent(listStudent);
+			project.setCourse(course);
 			listProject.add(project);
 		}
 		return listProject;

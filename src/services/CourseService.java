@@ -25,6 +25,16 @@ public class CourseService {
 	
 	public List<Course> searchCourses(String attributeName, String attributeValue) {
 		String query = "";
+		if(attributeName.equals("schoolYear+department")){
+			String department = attributeValue;
+			query = "SELECT course.idCourse, course.nom, course.beginDate, course.endDate,"
+					+ " course.hours, course.membreAmount, course.weights, course.choosingDeadline,"
+					+ " course.semester, course.department, course.teacher" 
+					+ " FROM Course course"
+					+ " WHERE course.department = '" + department + "'"
+					+ " AND course.schoolYear = '" + judgeSchoolYear() + "'";
+		}
+		
 		if(attributeName.equals("semester")){
 			String semester = attributeValue.split("-")[0];
 			String department = attributeValue.split("-")[1];

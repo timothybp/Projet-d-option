@@ -22,7 +22,9 @@
 		String surname = jsonObj.getString("surname");
 		String department = jsonObj.getString("department");
 		String photoPath = jsonObj.getString("photoPath");
+		String selectedOption = jsonObj.getString("selectedOption");
 		
+		JSONArray jsonArrayProject = JSONArray.fromObject(jsonObj.getString("listProject"));
 		String jsonStrEnc = URLEncoder.encode(jsonStrDec, java.nio.charset.StandardCharsets.UTF_8.toString());
     %>
             		
@@ -62,17 +64,36 @@
         		<p>
         			<label>Consulter vos projets par:&nbsp;&nbsp;&nbsp;&nbsp;</label>
 					<select style="width:200px" name="indicatorType">
-  						<option value ="all">Tous</option>
-  						<option value ="idProject">Id de projet</option>
-  						<option value="nom">Nom de sujet</option>
-  						<option value="semester">Semestre</option>
-  						<option value="startYear">Année de début</option>
-  						<option value="endYear">Année de fin</option>
+						<option value ="all"
+						<%if(selectedOption.equals("all")){ %> selected = "selected" <%} %> %>
+  						Tous</option>
+  						
+  						<option value ="idProject"
+  						<%if(selectedOption.equals("idProject")){ %> selected = "selected" <%} %> %>
+  						Id de projet</option>
+  						
+  						<option value="subject"
+  						<%if(selectedOption.equals("subject")){ %> selected = "selected" <%} %> %>
+  						sujet</option>
+  						
+  						<option value="semester"
+  						<%if(selectedOption.equals("semester")){ %> selected = "selected" <%} %> %>
+  						Semestre</option>
+  						
+  						<option value="startYear"
+  						<%if(selectedOption.equals("startYear")){ %> selected = "selected" <%} %> %>
+  						Année de début</option>
+  						
+  						<option value="endYear"
+  						<%if(selectedOption.equals("endYear")){ %> selected = "selected" <%} %> %>
+  						Année de fin</option>
 					</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="text" name="indicatorValue" style="width:250px">
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="submit" value="Rechercher" style="width:100px">
+					<input hidden="hidden" type="text" name="host" 
+        						value="<%=name+"_"+surname  %>">
 				</p>
 			</form>
         	</div>
@@ -89,12 +110,40 @@
         				<th width="60">Nom de course</th>
         				<th width="60">Semester</th>
         				<th width="60">Année scolaire</th>
-        				<th width="60">Date de début</th>
-        				<th width="60">Date de fin</th>
+        				<th width="70">Date de début</th>
+        				<th width="70">Date de fin</th>
         				<th width="80">Etudiant.e.s</th>
         			</tr>
-        			<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
-        				<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        			<%
+        				for(int i = 0; i < jsonArrayProject.size(); i++) {
+        					String number = String.valueOf(i+1);
+        					String idProject = jsonArrayProject.getJSONObject(i).getString("idProject");
+        					String subject = jsonArrayProject.getJSONObject(i).getString("subject");
+        					String description = jsonArrayProject.getJSONObject(i).getString("description");
+        					String supervisorNames = jsonArrayProject.getJSONObject(i).getString("supervisorNames");
+        					String enterprise = jsonArrayProject.getJSONObject(i).getString("enterprise");
+        					String courseName = jsonArrayProject.getJSONObject(i).getString("courseName");
+        					String semester = jsonArrayProject.getJSONObject(i).getString("semester");
+        					String projectYear = jsonArrayProject.getJSONObject(i).getString("projectYear");
+        					String startDate = jsonArrayProject.getJSONObject(i).getString("startDate");
+        					String endDate = jsonArrayProject.getJSONObject(i).getString("endDate");
+        					String studentNames = jsonArrayProject.getJSONObject(i).getString("studentNames");
+        			%>
+        			<tr>
+        				<td><%=number %></td>
+        				<td><%=idProject %></td>
+        				<td><%=subject %></td>
+        				<td><%=description %></td>
+        				<td><%=supervisorNames %></td>
+        				<td><%=enterprise %></td>
+        				<td><%=courseName %></td>
+        				<td><%=semester %></td>
+        				<td><%=projectYear %></td>
+        				<td><%=startDate %></td>
+        				<td><%=endDate %></td>
+        				<td><%=studentNames %></td>
+        			</tr>
+        			<% } %>
         	</table>
 			</div>
 			

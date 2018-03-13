@@ -1,13 +1,17 @@
 package controllers;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +47,8 @@ public class ChooseServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String courseName = request.getParameter("course").replaceAll("'", "''");
-		String listMember = request.getParameter("members").replaceAll(" ", "");
+		String courseName = request.getParameter("course").replace("'", "''");
+		String listMember = request.getParameter("members").replace(" ", "");
 		String host = request.getParameter("host");
 		String choice1 = request.getParameter("choice1");
 		String choice2 = request.getParameter("choice2");
@@ -71,7 +75,7 @@ public class ChooseServlet extends HttpServlet {
 			File filepath = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/choice/");
 			if(!filepath.exists())
 				filepath.mkdirs();
-			String filename = filepath + "/" + course.getNom() + "[" + course.getSchoolYear() + "].txt";
+			String filename = filepath + "/" + course.getNom() + "[" + course.getSchoolYear() + "]_etu.txt";
 			
 			
 			if(!listMember.equals("")){
@@ -93,7 +97,7 @@ public class ChooseServlet extends HttpServlet {
 										(student.getGrade()) == grade){
 									File file = new File(filename);
 									if(!file.exists() ||
-											(file.exists() && judgeStudentExistInFile(student.getIdStudent(),filename))){
+											(file.exists() && judgeStudentExistInFile(student.getIdStudent(),filename)==false)){
 										
 										ProjectService projectService = new ProjectService();
 										for(int j = 0; j < 3; j++){
@@ -101,7 +105,7 @@ public class ChooseServlet extends HttpServlet {
 											listProject = projectService.searchProjectsForOneCourse("idProject",listChoice.get(j));
 											if(listProject.size() == 0 || (listProject.size() != 0 && !listProject.get(0).getCourse().getIdCourse().equals(course.getIdCourse()))){			
 												sign = false;
-												message = "erreur_" + "Le sujet dont id = " + listChoice.get(j) + " n'existe pas pour le cours " + course.getNom() +"!";
+												message = "Erreur: Le sujet dont id = " + listChoice.get(j) + " n'existe pas pour le cours " + course.getNom() +"!";
 												break;
 											}
 										}
@@ -112,49 +116,54 @@ public class ChooseServlet extends HttpServlet {
 									}
 									else{
 										sign = false;
-										message = "erreur_" + "L'¨¦tudiant " + name + " " + surname + " a d¨¦j¨¤ fait son choix!";
+										message = "Erreur: L'¨¦tudiant " + name + " " + surname + " a d¨¦j¨¤ fait son choix!";
 										break;
 									}
 								}
 								else {
 									sign = false;
-									message = "erreur_" + "L'¨¦tudiant " + name + " " + surname + " n'est pas en " 
+									message = "Erreur: L'¨¦tudiant " + name + " " + surname + " n'est pas en " 
 												+ course.getDepartment() + String.valueOf(grade) + "!";
 									break;
 								}
 							}
 							else {
 								sign = false;
-								message = "erreur_" + "L'¨¦tudiant " + name + " " + surname + " n'existe pas!";
+								message = "Erreur: L'¨¦tudiant " + name + " " + surname + " n'existe pas!";
 								break;
 							}
 						}
 						if(sign == true) {
 							recordChoiceToFile(listIdStudent, listChoice, filename);
-							message = "information_" + "Vos voeux sont bien enregistr¨¦s!";
+							message = "Succ¨¨s: Vos voeux sont bien enregistr¨¦s!";
 						}
 					}
 					else{
 						if(course.getMembreAmount() == 1)
-							message = "erreur_" + "Ce projet doivoint ¨ºtre fait en 1 personne!";
+							message = "Erreur: Ce projet doivoint ¨ºtre fait en 1 personne!";
 						else
-							message = "erreur_" + "Ce projet doivoint ¨ºtre fait en " 
+							message = "Erreur: Ce projet doivoint ¨ºtre fait en " 
 										+ String.valueOf(course.getMembreAmount()-1) + "ou " 
 										+ String.valueOf(course.getMembreAmount()) + " personnes!";
 					}
 				}
 				else{
-					message = "erreur_" + "Il faut remplir tous les 3 voeux!";
+					message = "Erreur: Il faut remplir tous les 3 voeux!";
 				}
 			}
 			else{
-				message = "erreur_" + "Il faut saisir les noms des membres!";
+				message = "Erreur: Il faut saisir les noms des membres!";
 			}
 		}
 		else{
-			message = "erreur_" + "Il faut choisir un cours!";
+			message = "Erreur: Il faut choisir un cours!";
 		}
-		stayOnStudentChooseProjectPage(host, message,request, response);
+		RedirectController redirectCtrl = new RedirectController();
+		
+		Student student = new Student();
+		student = studentService.getStudentInfo("wholeName", host).get(0);
+		
+		redirectCtrl.redirectToStudentPage(student,message, "student_choose_project",request, response);
 	}
 
 	/**
@@ -165,27 +174,9 @@ public class ChooseServlet extends HttpServlet {
 		doGet(request, response);
 	}
 	
-	public void stayOnStudentChooseProjectPage(String host, String message,
-			HttpServletRequest request, HttpServletResponse response){
-		
-		StudentService studentService = new StudentService();
-		Student student = new Student();
-		student = studentService.getStudentInfo("wholeName", host).get(0);
-		
-		String messageType = message.split("_")[0];
-		String messageContent = message.split("_")[1];
-		if(messageType.equals("erreur"))
-			JOptionPane.showMessageDialog(null, messageContent,"Erreur",JOptionPane.ERROR_MESSAGE);
-		if(messageType.equals("information"))
-			JOptionPane.showMessageDialog(null, messageContent,"Succ¨¨s",JOptionPane.INFORMATION_MESSAGE); 
-	
-		LoginServlet loginServlet = new LoginServlet();
-		loginServlet.redirectToStudentChooseProjectPage(student, request, response);
-	}
-	
 	public boolean judgeStudentExistInFile(long idStudent, String filename){
-        FileInputStream inputStream;
-        boolean sign = true;
+		FileInputStream inputStream;
+        boolean sign = false;
 		try {
 			inputStream = new FileInputStream(filename);
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));  
@@ -195,13 +186,14 @@ public class ChooseServlet extends HttpServlet {
 	        {  
 	            String listStudent = str.split("\t")[0];
 	            String [] students = listStudent.split(";");
+	            
 	            for(int i = 0; i < students.length; i++) {
 	            	if(idStudent == Long.parseLong(students[i])){
-	            		sign = false;
+	            		sign = true;
 	            		break;
 	            	}
 	            }
-	            if(sign == false)
+	            if(sign == true)
 	            	break;
 	        }  
 	        inputStream.close();  
@@ -219,7 +211,7 @@ public class ChooseServlet extends HttpServlet {
 			content += String.valueOf(id) + ";";
 		}
 		content = content.substring(0, content.length()-1);
-		content += "\t" + listChoice.get(0) + ";" + listChoice.get(1) + ";" + listChoice.get(2) + "\n"; 
+		content += "\t" + listChoice.get(0) + ";" + listChoice.get(1) + ";" + listChoice.get(2); 
 		FileWriter fw = null;
 		try {
 			File f=new File(filename);

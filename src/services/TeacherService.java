@@ -65,6 +65,16 @@ public class TeacherService {
 					+ " WHERE teacher.idTeacher = " + idTeacher;
 		}
 		
+		if(attributeName.equals("wholeName")){
+			String name = attributeValue.split("_")[0];
+			String surname = attributeValue.split("_")[1];
+			query = "SELECT teacher.idTeacher, teacher.name, teacher.surname,"
+					+ " teacher.department, teacher.role, teacher.photoPath" 
+					+ " FROM Teacher teacher"
+					+ " WHERE teacher.name = '" + name + "'"
+					+ " AND teacher.surname = '" + surname + "'";
+		}
+		
 		List resultTeacher = teacherDao.select(query,em);
 		
 		List<Teacher> listTeacher = new ArrayList<Teacher>();

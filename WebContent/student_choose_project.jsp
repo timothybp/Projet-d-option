@@ -1,13 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="ISO-8859-1"%>
-<%@ page language="java" import="java.util.ArrayList" %>
-<%@ page language="java" import="java.util.List" %>
-<%@ page language="java" import="models.Course" %>
-<%@ page language="java" import="models.Project" %>
-<%@ page language="java" import="models.Teacher" %>
-<%@ page language="java" import="java.text.SimpleDateFormat" %>
 <%@ page language="java" import="net.sf.json.*" %>
-
+<%@page import="java.net.URLDecoder"%>
+<%@page import="java.net.URLEncoder"%>
+<%@page import="models.Course" %>
+<%@page import="java.util.List" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -19,128 +16,78 @@
 </head>
 
 <body>
+
+	<% 
+		String jsonStrDec = URLDecoder.decode(request.getParameter("jsonStrEnc"), java.nio.charset.StandardCharsets.UTF_8.toString());
+		JSONObject jsonObj = JSONObject.fromObject(jsonStrDec); 
+		String name = jsonObj.getString("name");
+		String surname = jsonObj.getString("surname");
+		String department = jsonObj.getString("department");
+		String grade = jsonObj.getString("grade");
+		String photoPath = jsonObj.getString("photoPath");
+		String firstSemester = jsonObj.getString("firstSemester");
+		String secondSemester = jsonObj.getString("secondSemester");
+		
+		JSONArray jsonArrayCourseFirstSemester = JSONArray.fromObject(jsonObj.getString("courseListForFirstSemester"));
+		JSONArray jsonArrayCourseSecondSemester = JSONArray.fromObject(jsonObj.getString("courseListForSecondSemester"));
+    %>
     <div class="wrap">
             <header>
             	<img src="images/logo.png" height="100%" width="15%" />
             	<font size="6" color="white" style="position:relative;top:-20px;">Le système de choisir les projets</font>
             	<input type="button" value="Se déconnecter" onclick="window.location='/DistributionDeProjets/login.jsp'" style="position:relative; top:23px; float:right;" />
-            	<img src="<%=(String)request.getAttribute("photoPath")%>" height="40" width="40" 
+            	<img src="<%=photoPath %>" height="40" width="40" 
             			style="position:relative; float:right; margin-right:200px;top:12px;"/>
             	<font size="3" color="white" style="position:relative;float:right; margin-right:-150px; top:23px;">
-            		<%=(String)request.getAttribute("name") %>&nbsp;
-            		<%=(String)request.getAttribute("surname") %>&nbsp;
-            		[<%=(String)request.getAttribute("department")+(String)request.getAttribute("grade") %>]
+            		<%=name %>&nbsp;
+            		<%=surname %>&nbsp;
+            		[<%=department+grade %>]
             	</font>
             </header>
             
             <section class="content">
-            	<% 
-            		List<Course> listCourseForFirstSemester = (ArrayList<Course>)request.getAttribute("courseListForFirstSemester");
-            		List<Course> listCourseForSecondSemester = (ArrayList<Course>)request.getAttribute("courseListForSecondSemester");
-            	%>
                 <div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:30px;text-align:center;">
-                	<h1>Choisir votre projet (<%=listCourseForFirstSemester.get(0).getSchoolYear() %>)</h1>
+                	<h1>Choisir votre projet (<%=jsonArrayCourseFirstSemester.getJSONObject(0).getString("schoolYear") %>)</h1>
         		</div>
         		
         		<div id="u1"
         			class="courseList" 
         			style="position:relative;top:70px; width:270px;height:300px;background:#C0C0C0;">
         			<font style="font-weight:bold;font-style:italic;">
-						&hearts; Projets disponibles pour le [<%=(String)request.getAttribute("department")+(String)request.getAttribute("grade") %>]
+						&hearts; Projets disponibles pour le [<%=department+grade %>]
 					</font>
         			<hr style="height:1px;border:none;border-top:1px solid #000000;" />
         			
-        			&nbsp;&nbsp;&nbsp;&nbsp;&diams; S<%=(String)request.getAttribute("firstSemester") %>
+        			&nbsp;&nbsp;&nbsp;&nbsp;&diams; S<%=firstSemester %>
         			<br>
         			<% 
-        				Course course = new Course();
-        				for(int i = 0; i < listCourseForFirstSemester.size(); i++){
-        					 course = listCourseForFirstSemester.get(i);
-         					 JSONObject jsonObj = new JSONObject();
-         					 jsonObj.put("nom", course.getNom().replace("'", "^"));
-         					 jsonObj.put("responsable", course.getTeacher().getName() + " " + course.getTeacher().getSurname());
-        					 
-        					 SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
-        					 SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        					 jsonObj.put("beginDate", sdf1.format(course.getBeginDate()));
-        					 jsonObj.put("endDate", sdf1.format(course.getEndDate()));
-        					 jsonObj.put("choosingDeadline", sdf2.format(course.getChoosingDeadline()));
-        					 
-        					 jsonObj.put("heures", String.valueOf(course.getHours()));
-        					 jsonObj.put("poids", String.valueOf(course.getWeights()));
-        					 jsonObj.put("memberAmount",String.valueOf(course.getMembreAmount()));
-  							
-        					 JSONArray jsonArrayProject = new JSONArray();
-        					 	for(Project project : course.getListProject()){
-        					 		JSONObject jsonObjProject = new JSONObject();
-        					 		jsonObjProject.put("idProject", String.valueOf(project.getIdProject()));
-        					 		jsonObjProject.put("subject",project.getSubject());
-        					 		jsonObjProject.put("description", project.getDescription());
-        					 		jsonObjProject.put("enterprise", project.getEnterprise());
-        					 		String supervisors = "";
-        					 		for(Teacher teacher: project.getListTeacher()){
-        					 			supervisors += teacher.getName() + " " + teacher.getSurname() + ";";
-        					 		}
-        					 		if(supervisors.length() != 0)
-        					 			jsonObjProject.put("supervisors", supervisors.substring(0, supervisors.length()-1));
-        					 		else
-        					 			jsonObjProject.put("supervisors", supervisors);
-        					 		jsonArrayProject.add(jsonObjProject);
-        					 	}
-        					 	jsonObj.put("projects", jsonArrayProject);
-        					 	String jsonStr = String.valueOf(jsonObj).replace("\"", "$");
-        				%>
+        				for(int i = 0; i < jsonArrayCourseFirstSemester.size(); i++){
+        					String jsonStr = jsonArrayCourseFirstSemester.get(i).toString();
+        					jsonStr = jsonStr.replace("\"", "$");
+        					jsonStr = jsonStr.replace("'", "^");
+        			%>
         			<label id="courseFirstSemester<%=i %>" 
         					onClick="courseName_clicked('<%=jsonStr %>')">
-       					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; <%=course.getNom() %>
+       					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; 
+       					<%=jsonArrayCourseFirstSemester.getJSONObject(i).getString("nom") %>
        				</label>
         			<br>
         			<% } %>
         			<br>
-        			&nbsp;&nbsp;&nbsp;&nbsp;&diams; S<%=(String)request.getAttribute("secondSemester") %>
+        			&nbsp;&nbsp;&nbsp;&nbsp;&diams; S<%=secondSemester %>
         			<br>
         			<% 	
-        				for(int i = 0; i < listCourseForSecondSemester.size(); i++){
-        					course = listCourseForSecondSemester.get(i);
-        					JSONObject jsonObj = new JSONObject();
-        					jsonObj.put("nom", course.getNom().replace("'", "^"));
-        					jsonObj.put("responsable", course.getTeacher().getName() + " " + course.getTeacher().getSurname());
-       					 
-       					 	SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
-       					 	SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-       					 	jsonObj.put("beginDate", sdf1.format(course.getBeginDate()));
-       					 	jsonObj.put("endDate", sdf1.format(course.getEndDate()));
-       					 	jsonObj.put("choosingDeadline", sdf2.format(course.getChoosingDeadline()));
-       					 
-       					 	jsonObj.put("heures", String.valueOf(course.getHours()));
-       					 	jsonObj.put("poids", String.valueOf(course.getWeights()));
-       					 	jsonObj.put("memberAmount",String.valueOf(course.getMembreAmount()));
- 							
-       					 	JSONArray jsonArrayProject = new JSONArray();
-       					 	for(Project project : course.getListProject()){
-       					 		JSONObject jsonObjProject = new JSONObject();
-       					 		jsonObjProject.put("idProject", String.valueOf(project.getIdProject()));
-       					 		jsonObjProject.put("subject",project.getSubject());
-       					 		jsonObjProject.put("description", project.getDescription());
-       					 		jsonObjProject.put("enterprise", project.getEnterprise());
-       					 		String supervisors = "";
-       					 		for(Teacher teacher: project.getListTeacher()){
-       					 			supervisors += teacher.getName() + " " + teacher.getSurname() + ";";
-       					 		}
-       					 		if(supervisors.length() != 0)
-       					 			jsonObjProject.put("supervisors", supervisors.substring(0, supervisors.length()-1));
-       					 		else
-       					 		jsonObjProject.put("supervisors", supervisors);
-       					 		jsonArrayProject.add(jsonObjProject);
-       					 	}
-       					 	jsonObj.put("projects", jsonArrayProject);
-       					 	String jsonStr = String.valueOf(jsonObj).replace("\"", "$");
+        				for(int i = 0; i < jsonArrayCourseSecondSemester.size(); i++){
+        					String jsonStr = jsonArrayCourseSecondSemester.get(i).toString();
+        					jsonStr = jsonStr.replace("\"", "$");
+        					jsonStr = jsonStr.replace("'", "^");
        				%>
        				<label id="courseSecondSemester<%=i %>" 
        					onClick="courseName_clicked('<%=jsonStr %>')">
-       					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; <%=course.getNom() %>
+       					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull;
+       					<%=jsonArrayCourseSecondSemester.getJSONObject(i).getString("nom") %>
        				</label>
         			<br>
         			<% } %>
@@ -167,7 +114,7 @@
         			<p>
         				<font size="2"> Noms des membres du groupe:</font>
         				<input type="text" name="members" 
-        						value="<%=(String)request.getAttribute("name")+"_"+(String)request.getAttribute("surname")  %>" 
+        						value="<%=name+"_"+surname  %>" 
         						style="width:278px">
         			</p>
         			<br>
@@ -193,7 +140,7 @@
         				<input type="submit" value="Soumettre" style="margin-right:2px;float:right;">
         			</p>
         			<input hidden="hidden" type="text" name="host" 
-        						value="<%=(String)request.getAttribute("name")+"_"+(String)request.getAttribute("surname")  %>">
+        						value="<%=name+"_"+surname  %>">
         		</form>
         	</div>
         		

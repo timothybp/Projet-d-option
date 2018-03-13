@@ -21,8 +21,11 @@
 		String surname = jsonObj.getString("surname");
 		String department = jsonObj.getString("department");
 		String photoPath = jsonObj.getString("photoPath");
+		String schoolYear = jsonObj.getString("schoolYear");
 		
-		String jsonStrEnc = URLEncoder.encode(jsonObj.toString(), java.nio.charset.StandardCharsets.UTF_8.toString());
+		JSONArray jsonArrayCourse = JSONArray.fromObject(jsonObj.getString("listCourse"));
+		
+		String jsonStrEnc = URLEncoder.encode(jsonStrDec, java.nio.charset.StandardCharsets.UTF_8.toString());
     %>
             		
     <div id="container" class="wrap">
@@ -53,7 +56,7 @@
 			<div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:80px;text-align:center;">
-                <h1>Proposition d'un nouveau projet</h1>
+                <h1>Proposition d'un nouveau projet (<%=schoolYear %>)</h1>
         	</div>
         	
         	<div id="u1" style="position:relative;top:120px;text-align:center;">
@@ -70,19 +73,21 @@
         			<p>
         			<font style="color: red;">*</font>
         			Cours: &nbsp;&nbsp;&nbsp;&nbsp;
-        			<select style="width:150px">
-  						<option value ="all">Tous</option>
-  						<option value ="idProject">Id de projet</option>
-  						<option value="nom">Nom de sujet</option>
-  						<option value="semester">Semestre</option>
-  						<option value="startYear">Année de début</option>
-  						<option value="endYear">Année de fin</option>
+        			<select style="width:150px" name="courseName">
+        			<option value ="Default">Cours disponibles</option>
+        			<%
+        				for(int i=0; i < jsonArrayCourse.size(); i++){ 
+        					String courseName = jsonArrayCourse.getJSONObject(i).getString("nom");
+        			%>
+  						<option value ="<%=courseName %>"><%=courseName %></option>
+  					<% } %>
 					</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;
         			Entreprise: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="enterprise" style="width:250px">
         			</p>
         			<br><br>
         			<input type="submit" value="Soumettre" style="height:25px;width:100px">
+        			<input type="text" name="host" value="<%=name+"_"+surname+"_" %>>" hidden="hidden">
         		</form>
         		<br><br>
         	</div>

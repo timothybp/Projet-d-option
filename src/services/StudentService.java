@@ -86,8 +86,6 @@ public class StudentService {
 			student.setPhotoPath((String)obj[5]);
 			listStudent.add(student);
 		}
-		
-		
 		return listStudent;
 	}
 }
