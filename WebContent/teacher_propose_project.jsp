@@ -34,8 +34,8 @@
             <font size="6" color="white" style="position:relative;top:-20px;">Le système de choisir les projets</font>
             <input type="button" value="Se déconnecter" onclick="window.location='/DistributionDeProjets/login.jsp'" style="position:relative; top:23px; float:right;" />
             <img src="<%=photoPath %>" height="40" width="40" 
-            		style="position:relative; float:right; margin-right:200px;top:12px;"/>
-            <font size="3" color="white" style="position:relative;float:right; margin-right:-170px; top:23px;">
+            		style="position:relative; float:right; margin-right:280px;top:12px;"/>
+            <font size="3" color="white" style="position:relative;float:right; margin-right:-240px; top:23px;">
             	<%=name %>&nbsp;
             	<%=surname %>&nbsp;
             	[<%=department %>]

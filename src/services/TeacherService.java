@@ -60,7 +60,8 @@ public class TeacherService {
 		if(attributeName.equals("idTeacher")){
 			String idTeacher = attributeValue;
 			query = "SELECT teacher.idTeacher, teacher.name, teacher.surname,"
-					+ " teacher.department, teacher.role, teacher.photoPath" 
+					+ " teacher.department, teacher.role, teacher.photoPath,"
+					+ " teacher.birthday, teacher.password, teacher.email, teacher.sex"
 					+ " FROM Teacher teacher"
 					+ " WHERE teacher.idTeacher = " + idTeacher;
 		}
@@ -69,7 +70,8 @@ public class TeacherService {
 			String name = attributeValue.split("_")[0];
 			String surname = attributeValue.split("_")[1];
 			query = "SELECT teacher.idTeacher, teacher.name, teacher.surname,"
-					+ " teacher.department, teacher.role, teacher.photoPath" 
+					+ " teacher.department, teacher.role, teacher.photoPath,"
+					+ " teacher.birthday, teacher.password, teacher.email, teacher.sex"
 					+ " FROM Teacher teacher"
 					+ " WHERE teacher.name = '" + name + "'"
 					+ " AND teacher.surname = '" + surname + "'";
@@ -88,8 +90,16 @@ public class TeacherService {
 			teacher.setDepartment((String)obj[3]);
 			teacher.setRole((String)obj[4]);
 			teacher.setPhotoPath((String)obj[5]);
+			teacher.setBirthday((Date)obj[6]);
+			teacher.setPassword((String)obj[7]);
+			teacher.setEmail((String)obj[8]);
+			teacher.setSex((String)obj[9]);
 			listTeacher.add(teacher);
 		}
 		return listTeacher;
+	}
+	
+	public void modifyTeacherRole(Teacher teacher) {
+		teacherDao.update(teacher, em);
 	}
 }

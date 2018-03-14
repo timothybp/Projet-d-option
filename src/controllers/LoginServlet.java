@@ -25,7 +25,6 @@ import models.Student;
 import models.Teacher;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import services.AdministratorService;
 import services.CourseService;
 import services.StudentService;
 import services.TeacherService;
@@ -51,8 +50,8 @@ public class LoginServlet extends HttpServlet {
 		
 		RedirectController redirectCtrl = new RedirectController();
 		
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
+		String username = request.getParameter("username").trim();
+		String password = request.getParameter("password").trim();
 		
 		String errorMessage = "";
 		
@@ -104,10 +103,10 @@ public class LoginServlet extends HttpServlet {
 			}
 			
 			else {
-				AdministratorService administratorService = new AdministratorService();
+				TeacherService teacherService = new TeacherService();
 				
 				//verify the authentification of login
-				int resultVerification = administratorService.verifyLogin(username, password);
+				int resultVerification = teacherService.verifyLogin(username, password);
 				if(resultVerification == 1) {
 					errorMessage = "Erreur: Le nom d'utilisateur n'existe pas dans le rôle [Administrateur]!";
 					redirectCtrl.stayOnLoginPage(errorMessage,request,response);
@@ -118,8 +117,8 @@ public class LoginServlet extends HttpServlet {
 				}
 				else {
 					Teacher teacher = new Teacher();
-					teacher = administratorService.getAdministratorInfo("idTeacher", username.substring(0, username.length()-1)).get(0);
-					redirectCtrl.redirectToAdministratorPage(teacher, "", "admin_home", request, response);
+					teacher = teacherService.getTeacherInfo("idTeacher", username.substring(0, username.length()-1)).get(0);
+					redirectCtrl.redirectToAdministratorPage(teacher, "", "admin_home", "", request, response);
 				}
 			}
 		}

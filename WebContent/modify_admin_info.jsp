@@ -66,22 +66,24 @@
         	</div>
 			
 			<div id="u1" style="position:relative;top:120px;text-align:center;">
-				<form action="login" method="post">
+				<form action="modify_admin_info" method="post">
         				<p style="position:relative; top:20px; text-align:center;">Sélectionner une opération:
-        				<input type="radio" name="privilege" value="student" checked>Ajouter un administrateur
-						<input type="radio" name="privilege" value="teacher">Supprimer un administrateur
+        				<input type="radio" name="privilege" value="add" checked>Ajouter un administrateur
+						<input type="radio" name="privilege" value="delete">Supprimer un administrateur
 						</p>
 						<br><br>
 						<p style="text-align:center;">Identifiant de professeur :
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="text" name="username">
+						<input type="text" name="idTeacher">
 						</p>
 						<br>
 						<p style="text-align:center;">Prénom et Nom de professeur:&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="password" name="password">
+						<input type="text" name="wholeName">
 						</p>
 						<br><br>
 						<p style="text-align:center;"> <input type="submit" value="Confirmer" style="width:120px;height:30px;"></p>
+						<input hidden="hidden" type="text" name="host" 
+        						value="<%=name+"_"+surname  %>">
 					</form> 
 			</div>
 			<div id="u2" 

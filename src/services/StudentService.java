@@ -1,6 +1,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -57,7 +58,9 @@ public class StudentService {
 		
 		if(attributeName.equals("idStudent")){
 			String idStudent = attributeValue;
-			query = "SELECT student.idStudent, student.name, student.surname, student.department, student.grade, student.photoPath" 
+			query = "SELECT student.idStudent, student.name, student.surname,"
+					+ " student.department, student.grade, student.photoPath,"
+					+ " student.birthday, student.password, student.email, student.sex" 
 					+ " FROM Student student"
 					+ " WHERE student.idStudent = " + idStudent;
 		}
@@ -65,7 +68,9 @@ public class StudentService {
 		if(attributeName.equals("wholeName")){
 			String name = attributeValue.split("_")[0];
 			String surname = attributeValue.split("_")[1];
-			query = "SELECT student.idStudent, student.name, student.surname, student.department, student.grade, student.photoPath" 
+			query = "SELECT student.idStudent, student.name, student.surname,"
+					+ " student.department, student.grade, student.photoPath,"
+					+ " student.birthday, student.password, student.email, student.sex" 
 					+ " FROM Student student"
 					+ " WHERE student.name = '" + name + "'"
 					+ " AND student.surname = '" + surname + "'";
@@ -84,6 +89,10 @@ public class StudentService {
 			student.setDepartment((String)obj[3]);
 			student.setGrade((Integer)obj[4]);
 			student.setPhotoPath((String)obj[5]);
+			student.setBirthday((Date)obj[6]);
+			student.setPassword((String)obj[7]);
+			student.setEmail((String)obj[8]);
+			student.setSex((String)obj[9]);
 			listStudent.add(student);
 		}
 		return listStudent;

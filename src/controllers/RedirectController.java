@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -151,7 +152,7 @@ public class RedirectController {
 	
 
     public void redirectToTeacherPage(Teacher teacher, String message, String pageName,
-    		String attachement, HttpServletRequest request, HttpServletResponse response) {
+    		String attachment, HttpServletRequest request, HttpServletResponse response) {
     	
     	JSONObject jsonObjTeacher = new JSONObject();
     	jsonObjTeacher.put("name", teacher.getName());
@@ -172,7 +173,7 @@ public class RedirectController {
     	jsonObjTeacher.put("schoolYear", courseSercice.judgeSchoolYear());
     	 
     	ProjectService projectService = new ProjectService();
-    	List<Project> listProject = projectService.ViewMyOwnProjets(attachement, String.valueOf(teacher.getIdTeacher()));
+    	List<Project> listProject = projectService.ViewMyOwnProjets(attachment, String.valueOf(teacher.getIdTeacher()));
     	JSONArray jsonArrayProject = new JSONArray();
     	for(Project project: listProject){
     		JSONObject jsonObjProject = new JSONObject();
@@ -210,7 +211,7 @@ public class RedirectController {
     	
     	
     	jsonObjTeacher.put("listProject", jsonArrayProject);
-    	jsonObjTeacher.put("selectedOption", attachement.split("_")[0]);
+    	jsonObjTeacher.put("selectedOption", attachment.split("_")[0]);
     	
     	String jsonStr = "";
 		try {
@@ -234,21 +235,99 @@ public class RedirectController {
     }
    
     public void redirectToAdministratorPage(Teacher teacher, String message,String pageName,
-    		HttpServletRequest request, HttpServletResponse response) {
+    		String attachment, HttpServletRequest request, HttpServletResponse response) {
     	
-    	JSONObject jsonObj = new JSONObject();
-    	jsonObj.put("name", teacher.getName());
-    	jsonObj.put("surname", teacher.getSurname());
-    	jsonObj.put("department", teacher.getDepartment());
-    	jsonObj.put("photoPath", teacher.getPhotoPath());
+    	JSONObject jsonObjAdmin = new JSONObject();
+    	jsonObjAdmin.put("name", teacher.getName());
+    	jsonObjAdmin.put("surname", teacher.getSurname());
+    	jsonObjAdmin.put("department", teacher.getDepartment());
+    	jsonObjAdmin.put("photoPath", teacher.getPhotoPath());
     	
     	CourseService courseSercice = new CourseService();
-    	jsonObj.put("schoolYear", courseSercice.judgeSchoolYear());
+    	jsonObjAdmin.put("schoolYear", courseSercice.judgeSchoolYear());
     	
     	
+    	File propositionDir = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/proposition/");
+    	JSONArray jsonArraycourseForProposition = new JSONArray();
+		if(propositionDir.exists()){
+			for(File file : propositionDir.listFiles()) {
+	            if(file.isFile()) {
+	            	JSONObject jsonObjcourseForProposition = new JSONObject();
+	            	String filename = file.getName();
+	            	String courseName = filename.split("\\[")[0];
+	            	String schoolYear = filename.split("\\[")[1].split("\\]")[0];
+	            	
+	            	jsonObjcourseForProposition.put("courseName", courseName +" #" + schoolYear);
+	            	jsonArraycourseForProposition.add(jsonObjcourseForProposition);
+	            }
+	        }
+		}
+		jsonObjAdmin.put("courseForProposition", jsonArraycourseForProposition);
+		
+		File choiceDir = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/choice/");
+    	JSONArray jsonArraycourseForChoice = new JSONArray();
+		if(choiceDir.exists()){
+			for(File file : choiceDir.listFiles()) {
+	            if(file.isFile()) {
+	            	JSONObject jsonObjcourseForChoice = new JSONObject();
+	            	String filename = file.getName();
+	            	String courseName = filename.split("\\[")[0];
+	            	String schoolYear = filename.split("\\[")[1].split("\\]")[0];
+	            
+	            	jsonObjcourseForChoice.put("courseName", courseName +" #" + schoolYear);
+	            	jsonArraycourseForChoice.add(jsonObjcourseForChoice);
+	            }
+	        }
+		}
+		jsonObjAdmin.put("courseForChoice", jsonArraycourseForChoice);
+		
+		FileController fileCtrl = new FileController();
+		JSONArray jsonArrayProject = new JSONArray();
+		JSONArray jsonArrayChoice = new JSONArray();
+		if(!attachment.equals("")){
+			String readDir = attachment.split("#")[0];
+			String filename = attachment.split("#")[1];
+			if(readDir.equals("pro")){
+				List<Project> listProject = fileCtrl.readPropositionFile(filename);
+				for(Project project:listProject){
+					JSONObject jsonObjProject = new JSONObject();
+					jsonObjProject.put("subject", project.getSubject());
+					jsonObjProject.put("description", project.getDescription());
+					jsonObjProject.put("enterprise", project.getEnterprise());
+					jsonObjProject.put("idCourse", String.valueOf(project.getCourse().getIdCourse()));
+					jsonObjProject.put("selectedCourseName", project.getCourse().getNom() + " #" + 
+					project.getCourse().getSchoolYear());
+					String supervisorName = "";
+					for(Teacher supervisor: project.getListTeacher()){
+						supervisorName += supervisor.getName() + " " + supervisor.getSurname() + ";";
+					}
+					if(!supervisorName.equals(""))
+						supervisorName = supervisorName.substring(0, supervisorName.length()-1);
+					jsonObjProject.put("supervisors", supervisorName);
+					jsonArrayProject.add(jsonObjProject);
+				}
+			}
+			
+			if(readDir.equals("etu")){
+				List<List<String>> listChoice = fileCtrl.readChoiceFile(filename);
+				for(List<String> listChoiceForEachGroup: listChoice){
+					JSONObject jsonObjChoice = new JSONObject();
+					jsonObjChoice.put("memberIds", listChoiceForEachGroup.get(0));
+					jsonObjChoice.put("memberWholeNames", listChoiceForEachGroup.get(1));
+					jsonObjChoice.put("choiceIds",listChoiceForEachGroup.get(2));
+					jsonObjChoice.put("choiceSubject", listChoiceForEachGroup.get(3));
+					jsonObjChoice.put("selectedCourseName", listChoiceForEachGroup.get(4) + " #" + 
+							listChoiceForEachGroup.get(5));
+					jsonArrayChoice.add(jsonObjChoice);
+				}
+			}
+		}
+		jsonObjAdmin.put("listProject", jsonArrayProject);
+		jsonObjAdmin.put("listChoice", jsonArrayChoice);
+		
     	String jsonStr = "";
 		try {
-			jsonStr = java.net.URLEncoder.encode(String.valueOf(jsonObj),java.nio.charset.StandardCharsets.UTF_8.toString());
+			jsonStr = java.net.URLEncoder.encode(String.valueOf(jsonObjAdmin),java.nio.charset.StandardCharsets.UTF_8.toString());
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

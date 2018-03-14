@@ -22,6 +22,7 @@
 		String surname = jsonObj.getString("surname");
 		String department = jsonObj.getString("department");
 		String photoPath = jsonObj.getString("photoPath");
+		String schoolYear = jsonObj.getString("schoolYear");
 		
 		String jsonStrEnc = URLEncoder.encode(jsonStrDec, java.nio.charset.StandardCharsets.UTF_8.toString());
     %>
@@ -62,11 +63,11 @@
 			<div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:80px;text-align:center;">
-                <h1>Création d'un cours de projet</h1>
+                <h1>Création d'un cours de projet (<%=schoolYear %>)</h1>
         	</div>
 			
 			<div id="u1" style="position:relative;top:100px;text-align:center;">
-        		<form>
+        		<form action="create_new_course" method="post">
         			<p>
         				<font style="color: red;">*</font>
         				Id de cours: &nbsp;&nbsp;&nbsp;&nbsp; <input type="text" name="idCourse" style="width:220px">&nbsp;&nbsp;&nbsp;&nbsp;
@@ -74,7 +75,7 @@
         				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         				<font style="color: red;">*</font>
-        				Nom de cours: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="name" style="width:220px">
+        				Nom de cours: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="nameCourse" style="width:220px">
         			</p>
         			<br><br>
         			<p>
@@ -90,17 +91,19 @@
         				<font style="color: red;">*</font>
         				Semester: &nbsp;&nbsp;&nbsp;&nbsp;
         				<select style="width:180px" name="semester">
-  							<option value ="s5">S5</option>
-  							<option value ="s6">S6</option>
-  							<option value ="s7">S7</option>
-  							<option value ="s8">S8</option>
-  							<option value ="s9">S9</option>
-  							<option value ="s10">S10</option>
+        					<option value ="default">-- Semetre --</option>
+  							<option value ="5">S5</option>
+  							<option value ="6">S6</option>
+  							<option value ="7">S7</option>
+  							<option value ="8">S8</option>
+  							<option value ="9">S9</option>
+  							<option value ="10">S10</option>
 						</select>
 						&nbsp;&nbsp;&nbsp;&nbsp;
 						<font style="color: red;">*</font>
         				Departement: &nbsp;&nbsp;&nbsp;&nbsp;
-        				<select style="width:130px" name="semester">
+        				<select style="width:130px" name="department">
+        					<option value ="default">-- Departement --</option>
   							<option value ="DI">DI</option>
   							<option value ="DEE">DEE</option>
   							<option value ="DMS">DMS</option>
@@ -122,6 +125,8 @@
         			</P>
         			<br><br>
         			<input type="submit" value="Créer" style="height:25px;width:100px">
+        			<input hidden="hidden" type="text" name="host" 
+        						value="<%=name+"_"+surname  %>">
         		</form>
         	</div>
         	

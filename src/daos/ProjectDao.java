@@ -4,8 +4,12 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+
+import models.Course;
+import models.Project;
 
 public class ProjectDao {
 
@@ -19,5 +23,12 @@ public class ProjectDao {
 		Query query = em.createQuery(queryString); 
 		List result = query.getResultList(); 
 		return result;
+	}
+	
+	public void insert(Project project, EntityManager em) {
+		EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        em.persist(project);
+        transaction.commit();
 	}
 }

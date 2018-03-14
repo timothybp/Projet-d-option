@@ -22,6 +22,14 @@
 		String surname = jsonObj.getString("surname");
 		String department = jsonObj.getString("department");
 		String photoPath = jsonObj.getString("photoPath");
+		String schoolYear = jsonObj.getString("schoolYear");
+		
+		JSONArray jsonArrayCourseForProposition = JSONArray.fromObject(jsonObj.getString("courseForProposition"));
+		
+		JSONArray jsonArrayProject = JSONArray.fromObject(jsonObj.getString("listProject"));
+		String selectedCourseName = "";
+		if(jsonArrayProject.size() != 0)
+			selectedCourseName = jsonArrayProject.getJSONObject(0).getString("selectedCourseName");
 		
 		String jsonStrEnc = URLEncoder.encode(jsonStrDec, java.nio.charset.StandardCharsets.UTF_8.toString());
     %>
@@ -62,18 +70,26 @@
 			<div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:80px;text-align:center;">
-                <h1>Distribution des projets</h1>
+                <h1>Distribution des projets (<%=schoolYear %>)</h1>
         	</div>
 			
 			<div id="u1" style="position:relative;top:120px;text-align:center;">
-        		<form>
+        		<form action="load_teacher_proposition" method="post">
         			<p>
         			Regarder la liste de projets à distribuer en <%=department %>: &nbsp;&nbsp;&nbsp;&nbsp;
-        			<select style="width:180px" name="course">
-  						<option value ="projetSI">Projet SI</option>
-  						<option value ="prd">Projet P&D</option>
-  						<option value ="projetASR">Projet ASR</option>
-  						<option value ="projetLibre">Projet libre</option>
+        			<select style="width:220px" name="course">
+        				<option value ="default"
+        				<%if(selectedCourseName.equals("")){ %> selected = "selected" <%} %> >
+        				Cours disponibles à distribuer</option>
+        				
+        				<%
+        					for(int i = 0; i < jsonArrayCourseForProposition.size(); i++) {
+        						String courseName = jsonArrayCourseForProposition.getJSONObject(i).getString("courseName");
+        				%>
+  						<option value ="<%=courseName %>"
+  						<%if(courseName.equals(selectedCourseName)){ %> selected = "selected" <%} %> >
+  						<%=courseName %></option>
+						<% } %>
 					</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="submit" value="Rechercher" style="height:25px;width:100px">
@@ -81,15 +97,37 @@
 					<table class="gridtable" style="position:relative; width: 90%;left:60px;">
         				<tr class="header">
         					<th width="50">Numéro</th>
-        					<th width="50">Id</th>
         					<th width="250">Sujet</th>
         					<th>Description</th>
-        					<th width="200">Encadrant.e.s</th>
+        					<th width="220">Encadrant.e.s</th>
         					<th width="100">Entreprise</th>
         				</tr>
-        				<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        				
+        				<%if(jsonArrayProject.size() == 0) { %>
+        				<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        				<%}
+        				else {
+        					for(int j = 0; j < jsonArrayProject.size(); j++){
+        				%>
+        				<tr>
+        					<td><%=j+1 %></td>
+        					<td><%=jsonArrayProject.getJSONObject(j).getString("subject") %></td>
+        					<td><%=jsonArrayProject.getJSONObject(j).getString("description") %></td>
+        					<td><%=jsonArrayProject.getJSONObject(j).getString("supervisors") %></td>
+        					<td><%=jsonArrayProject.getJSONObject(j).getString("enterprise") %></td>
+        				</tr>
+        				<%}} %>
         			</table>
+        			<input hidden="hidden" type="text" name="host" 
+        						value="<%=name+"_"+surname  %>">
+        		</form>
+        		
+        		<form action="distribute_project" method="post">
         			<input type="submit" value="Distribuer" style="position: relative; top:30px;height:25px;width:100px">
+        			<input hidden="hidden" type="text" name="host_1" 
+        				value="<%=name+"_"+surname  %>">
+        			<input hidden="hidden" type="text" name="selectedCourse" 
+        				value="<%=selectedCourseName  %>">
         		</form>
         	</div>		
         </section>

@@ -28,7 +28,7 @@ public class VisualizeServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String indicatorType = request.getParameter("indicatorType");
-		String indicatorValue = request.getParameter("indicatorValue");
+		String indicatorValue = request.getParameter("indicatorValue").trim();
 		String host = request.getParameter("host");
 		
 		String message = "";

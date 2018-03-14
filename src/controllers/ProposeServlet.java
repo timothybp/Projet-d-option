@@ -45,17 +45,18 @@ public class ProposeServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String subject = request.getParameter("subject");
-		String description = request.getParameter("description");
+		String subject = request.getParameter("subject").trim();
+		String description = request.getParameter("description").trim();
 		String listSupervisor = request.getParameter("supervisor").replaceAll(" ", "");
 		String courseName = request.getParameter("courseName");
-		String enterprise = request.getParameter("enterprise");
+		String enterprise = request.getParameter("enterprise").trim();
 		String teacherInfo = request.getParameter("teacherInfo");
 		String host = request.getParameter("host");
 		
 		String message = "";
 		TeacherService teacherService = new TeacherService();
 		CourseService courseService = new CourseService();
+		FileController fileCtrl = new FileController();
 		
 		if(!courseName.equals("Default")) {
 			Course course = new Course();
@@ -73,19 +74,25 @@ public class ProposeServlet extends HttpServlet {
 				
 				File file = new File(filename);
 				List<Teacher> teachers = new ArrayList<Teacher>();
-				if(!file.exists() ||
-						(file.exists() && judgeSubjectExistInFile(subject,filename)==false)){
+				if(!file.exists() || fileCtrl.judgeSubjectExistInFile(subject,filename)==false){
 					for(int i = 0; i < supervisors.length; i++){
-						String name = supervisors[i].split("_")[0];
-						String surname = supervisors[i].split("_")[1];
-					
-						List<Teacher> listTeacher = teacherService.getTeacherInfo("wholeName", supervisors[i]);
-						if(listTeacher.size() != 0) {
-							teacher = listTeacher.get(0);
-							teachers.add(teacher);
+						if(supervisors[i].split("_").length == 2){
+							String name = supervisors[i].split("_")[0];
+							String surname = supervisors[i].split("_")[1];
+						
+							List<Teacher> listTeacher = teacherService.getTeacherInfo("wholeName", supervisors[i]);
+							if(listTeacher.size() != 0) {
+								teacher = listTeacher.get(0);
+								teachers.add(teacher);
+							}
+							else{
+								message = "Erreur: Le professeur " + name + " " + surname + " n'existe pas!";
+								sign = false;
+								break;
+							}
 						}
 						else{
-							message = "Erreur: Le professeur " + name + " " + surname + " n'existe pas!";
+							message = "Erreur: Le format de nom de l'encadrant n'est pas correct!";
 							sign = false;
 							break;
 						}
@@ -93,16 +100,23 @@ public class ProposeServlet extends HttpServlet {
 					if(sign == true) {
 						Project project = new Project();
 						project.setSubject(subject);
+						
+						if(description.equals(""))
+							description = "VIDE";
 						project.setDescription(description);
+						
 						project.setCourse(course);
+						
+						if(enterprise.equals(""))
+							enterprise = "VIDE";
 						project.setEnterprise(enterprise);
+						
 						project.setListTeacher(teachers);
-						recordPropositionToFile(project, filename);
+						fileCtrl.recordPropositionToFile(project, filename);
 						message = "Succ¨¨s: votre projet est bien enregistr¨¦s!";
 					}
 				}
 				else {
-					System.out.println("ewrewtewtyrerwtewtewtr");
 					message = "Erreur: Le sujet [ " + subject + " ] est d¨¦j¨¤ ¨ºtre propos¨¦ "
 							+ "pour le cours " + course.getNom() + " en " + course.getSchoolYear() + "!";
 				}
@@ -116,10 +130,8 @@ public class ProposeServlet extends HttpServlet {
 		}
 		
 		RedirectController redirectCtrl = new RedirectController();
-		
 		Teacher teacher = new Teacher();
 		teacher = teacherService.getTeacherInfo("wholeName", host).get(0);
-	
 		redirectCtrl.redirectToTeacherPage(teacher, message, "teacher_propose_project", "all_null", request, response);
 	}
 
@@ -129,54 +141,5 @@ public class ProposeServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
-	}
-	
-	public boolean judgeSubjectExistInFile(String subject, String filename){
-        FileInputStream inputStream;
-        boolean sign = false;
-		try {
-			inputStream = new FileInputStream(filename);
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));  
-            
-	        String str = null;  
-	        while((str = bufferedReader.readLine()) != null)  
-	        {  
-	            String subjectRead = subject.split("\t")[0];
-	            if(subjectRead.equals(subject)){
-	            	sign = true;
-	            	break;
-	            }
-	        }  
-	        inputStream.close();  
-	        bufferedReader.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
-		return sign;
-	}
-	
-	public void recordPropositionToFile(Project project, String filename){
-		String content = project.getSubject() + "\t";
-		for(Teacher teacher: project.getListTeacher()){
-			content += String.valueOf(teacher.getIdTeacher()) + ";";
-		}
-		content = content.substring(0, content.length()-1) + "\t";
-		content += project.getDescription() + "\t" + project.getEnterprise();
-		
-		FileWriter fw = null;
-		try {
-			File f=new File(filename);
-			fw = new FileWriter(f, true);
-			PrintWriter pw = new PrintWriter(fw);
-			pw.println(content);
-			pw.flush();
-			fw.flush();
-			pw.close();
-			fw.close();
-			System.out.println(f.getAbsolutePath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

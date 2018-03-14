@@ -34,8 +34,8 @@
             <font size="6" color="white" style="position:relative;top:-20px;">Le système de choisir les projets</font>
             <input type="button" value="Se déconnecter" onclick="window.location='/DistributionDeProjets/login.jsp'" style="position:relative; top:23px; float:right;" />
             <img src="<%=photoPath %>" height="40" width="40" 
-            		style="position:relative; float:right; margin-right:200px;top:12px;"/>
-            <font size="3" color="white" style="position:relative;float:right; margin-right:-170px; top:23px;">
+            		style="position:relative; float:right; margin-right:280px;top:12px;"/>
+            <font size="3" color="white" style="position:relative;float:right; margin-right:-240px; top:23px;">
             	<%=name %>&nbsp;
             	<%=surname %>&nbsp;
             	[<%=department %>]
@@ -65,27 +65,27 @@
         			<label>Consulter vos projets par:&nbsp;&nbsp;&nbsp;&nbsp;</label>
 					<select style="width:200px" name="indicatorType">
 						<option value ="all"
-						<%if(selectedOption.equals("all")){ %> selected = "selected" <%} %> %>
+						<%if(selectedOption.equals("all")){ %> selected = "selected" <%} %> >
   						Tous</option>
   						
   						<option value ="idProject"
-  						<%if(selectedOption.equals("idProject")){ %> selected = "selected" <%} %> %>
+  						<%if(selectedOption.equals("idProject")){ %> selected = "selected" <%} %> >
   						Id de projet</option>
   						
   						<option value="subject"
-  						<%if(selectedOption.equals("subject")){ %> selected = "selected" <%} %> %>
+  						<%if(selectedOption.equals("subject")){ %> selected = "selected" <%} %> >
   						sujet</option>
   						
   						<option value="semester"
-  						<%if(selectedOption.equals("semester")){ %> selected = "selected" <%} %> %>
+  						<%if(selectedOption.equals("semester")){ %> selected = "selected" <%} %> >
   						Semestre</option>
   						
   						<option value="startYear"
-  						<%if(selectedOption.equals("startYear")){ %> selected = "selected" <%} %> %>
+  						<%if(selectedOption.equals("startYear")){ %> selected = "selected" <%} %> >
   						Année de début</option>
   						
   						<option value="endYear"
-  						<%if(selectedOption.equals("endYear")){ %> selected = "selected" <%} %> %>
+  						<%if(selectedOption.equals("endYear")){ %> selected = "selected" <%} %> >
   						Année de fin</option>
 					</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;

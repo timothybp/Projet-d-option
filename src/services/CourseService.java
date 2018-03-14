@@ -25,6 +25,16 @@ public class CourseService {
 	
 	public List<Course> searchCourses(String attributeName, String attributeValue) {
 		String query = "";
+		
+		if(attributeName.equals("idCourse")){
+			String idCourse = attributeValue;
+			query = "SELECT course.idCourse, course.nom, course.beginDate, course.endDate,"
+					+ " course.hours, course.membreAmount, course.weights, course.choosingDeadline,"
+					+ " course.semester, course.department, course.teacher" 
+					+ " FROM Course course"
+					+ " WHERE course.idCourse = '" + idCourse + "'";
+		}
+		
 		if(attributeName.equals("schoolYear+department")){
 			String department = attributeValue;
 			query = "SELECT course.idCourse, course.nom, course.beginDate, course.endDate,"
@@ -55,6 +65,17 @@ public class CourseService {
 					+ " FROM Course course"
 					+ " WHERE course.nom = '" + nom + "'"
 					+ " AND course.schoolYear = '" + judgeSchoolYear() + "'";
+		}
+		
+		if(attributeName.equals("nom+schoolYear")){
+			String nom = attributeValue.split("_")[0];
+			String schoolYear = attributeValue.split("_")[1];
+			query = "SELECT course.idCourse, course.nom, course.beginDate, course.endDate,"
+					+ " course.hours, course.membreAmount, course.weights, course.choosingDeadline,"
+					+ " course.semester, course.department, course.teacher" 
+					+ " FROM Course course"
+					+ " WHERE course.nom = '" + nom + "'"
+					+ " AND course.schoolYear = '" + schoolYear + "'";
 		}
 		
 		List result = courseDao.select(query,em);
@@ -108,5 +129,64 @@ public class CourseService {
 			e.printStackTrace();
 		}
 		return date;
+	}
+	
+	public Date recoverDateFormat(String dateTime) {
+		String date = dateTime.split(" ")[0];
+		String day = date.split("/")[0];
+		String month = date.split("/")[1];
+		String year = date.split("/")[2];
+		
+		String time = dateTime.split(" ")[1];
+		String hour = time.split(":")[0];
+		String minute = time.split(":")[1];
+		String second = time.split(":")[2];
+		
+		String dateStr = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date newDate = new Date(); 
+		try {
+			newDate = sdf.parse(dateStr);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return newDate;
+	}
+	
+	//Verify if all characters are numeric
+	public boolean isNumeric(String str){
+		for(int i = 0;i < str.length();i++){
+			if (!Character.isDigit(str.charAt(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean judgeDateFormat(String dateStr) {
+		String [] date = dateStr.split("/");
+		if(date.length == 3){
+			if(isNumeric(date[0]) == true && isNumeric(date[1]) == true && isNumeric(date[2]) == true){
+				if((Integer.valueOf(date[0]) >= 1 && Integer.valueOf(date[0]) <= 31) &&
+						(Integer.valueOf(date[1]) >= 1 && Integer.valueOf(date[1]) <= 12) &&
+						date[2].length() == 4) {
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false;
+		}
+	}
+	
+	public void save(Course course) {
+		courseDao.insert(course, em);
 	}
 }

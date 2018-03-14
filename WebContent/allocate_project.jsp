@@ -22,6 +22,14 @@
 		String surname = jsonObj.getString("surname");
 		String department = jsonObj.getString("department");
 		String photoPath = jsonObj.getString("photoPath");
+		String schoolYear = jsonObj.getString("schoolYear");
+		
+		JSONArray jsonArrayCourseForChoice = JSONArray.fromObject(jsonObj.getString("courseForChoice"));
+		
+		JSONArray jsonArrayChoice = JSONArray.fromObject(jsonObj.getString("listChoice"));
+		String selectedCourseName = "";
+		if(jsonArrayChoice.size() != 0)
+			selectedCourseName = jsonArrayChoice.getJSONObject(0).getString("selectedCourseName");
 		
 		String jsonStrEnc = URLEncoder.encode(jsonStrDec, java.nio.charset.StandardCharsets.UTF_8.toString());
     %>
@@ -62,21 +70,31 @@
 			<div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:80px;text-align:center;">
-                <h1>Affectation des projets</h1>
+                <h1>Affectation des projets (<%=schoolYear %>)</h1>
         	</div>
 			
 			<div id="u1" style="position:relative;top:120px;text-align:center;">
-        		<form>
+        		<form action="load_student_choice" method="post">
         			<p>
         			Regarder la liste de choix des étudiants en <%=department %>: &nbsp;&nbsp;&nbsp;&nbsp;
-        			<select style="width:180px" name="course">
-  						<option value ="projetSI">Projet SI</option>
-  						<option value ="prd">Projet P&D</option>
-  						<option value ="projetASR">Projet ASR</option>
-  						<option value ="projetLibre">Projet libre</option>
+        			<select style="width:220px" name="course">
+        				<option value ="default"
+        				<%if(selectedCourseName.equals("")){ %> selected = "selected" <%} %> >
+        				Cours disponibles à affecter</option>
+        				
+  						<%
+        					for(int i = 0; i < jsonArrayCourseForChoice.size(); i++) {
+        						String courseName = jsonArrayCourseForChoice.getJSONObject(i).getString("courseName");
+        				%>
+  						<option value ="<%=courseName %>"
+  						<%if(courseName.equals(selectedCourseName)){ %> selected = "selected" <%} %> >
+  						<%=courseName %></option>
+						<% } %>
 					</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="submit" value="Rechercher" style="height:25px;width:100px">
+					<input hidden="hidden" type="text" name="host" 
+        						value="<%=name+"_"+surname  %>">
 					</p><br>
 				</form>
 				<form>
@@ -88,9 +106,29 @@
         					<th>Sujet 2</th>
         					<th>Sujet 3</th>
         				</tr>
+        				
+						<%if(jsonArrayChoice.size() == 0) { %>
         				<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        				<%}
+        				else {
+        					for(int j = 0; j < jsonArrayChoice.size(); j++){
+        				%>
+        				<tr>
+        					<td><%=j+1 %></td>
+        					<td><%=jsonArrayChoice.getJSONObject(j).getString("memberWholeNames") %></td>
+        					<td><%=jsonArrayChoice.getJSONObject(j).getString("choiceSubject").split(";")[0] %></td>
+        					<td><%=jsonArrayChoice.getJSONObject(j).getString("choiceSubject").split(";")[1] %></td>
+        					<td><%=jsonArrayChoice.getJSONObject(j).getString("choiceSubject").split(";")[2] %></td>
+        				</tr>
+        				<%}} %>
         			</table>
+        		</form>
+        		<form action="allocate_project" method="post">
         			<input type="submit" value="Affecter" style="position: relative; top:30px;height:25px;width:100px">
+        			<input hidden="hidden" type="text" name="host_1" 
+        				value="<%=name+"_"+surname  %>">
+        			<input hidden="hidden" type="text" name="selectedCourse" 
+        				value="<%=selectedCourseName  %>">
         		</form>
         	</div>		
         </section>
