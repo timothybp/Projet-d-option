@@ -90,4 +90,12 @@
     <servlet-name>allocateProject</servlet-name>
     <url-pattern>/allocate_project</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>modifyCourse</servlet-name>
+    <servlet-class>controllers.ModifyCourseServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>modifyCourse</servlet-name>
+    <url-pattern>/modify_course</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -124,6 +124,31 @@ public class FileController {
 		}
 	}
 	
+	public void recordSolutions(List<List<String>> listSolution, File filepath){
+		String content = "";
+		for(int i = 0 ; i < listSolution.size(); i++){
+			FileWriter fw = null;
+			String filename = filepath + "/solution_" + String.valueOf(i+1) + ".txt";
+			for(String line: listSolution.get(i)){
+				content = line;
+	
+				try {
+					File f=new File(filename);
+					fw = new FileWriter(f, true);
+					PrintWriter pw = new PrintWriter(fw);
+					pw.println(content);
+					pw.flush();
+					fw.flush();
+					pw.close();
+					fw.close();
+					System.out.println(f.getAbsolutePath());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	public List<Project> readPropositionFile(String filename){
 		FileInputStream inputStream;
 		List<Project> listProject = new ArrayList<Project>();
@@ -177,11 +202,13 @@ public class FileController {
 	public List<List<String>> readChoiceFile(String filename){
 		FileInputStream inputStream;
 		List<List<String>> listChoice = new ArrayList<List<String>>();
+		ProjectService projectService = new ProjectService();
+		CourseService courseService = new CourseService();
 		
 		try {
 			inputStream = new FileInputStream(filename);
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));  
-            
+			
 	        String str = null;  
 	        while((str = bufferedReader.readLine()) != null)  
 	        {  
@@ -205,19 +232,23 @@ public class FileController {
 	            listChoiceForEachGroup.add(choiceIds);
 	            
 	            String [] projectIds = choiceIds.split(";");
-	            ProjectService projectService = new ProjectService();
+	            
 	            String choiceSubjects = "";
 	            String courseName = "";
 	            String schoolYear = "";
+	            Project project = new Project();
 	            for(int j = 0; j < projectIds.length; j++) {
-	            	Project project = projectService.searchProjectsForOneCourse("idProject", projectIds[j]).get(0);
+	            	project = projectService.searchProjectsForOneCourse("idProject", projectIds[j]).get(0);
 	            	choiceSubjects += project.getSubject() + ";";
-	            	courseName = project.getCourse().getNom();
-	            	schoolYear = project.getCourse().getSchoolYear();
 	            }
 	            if(!choiceSubjects.equals(""))
 	            	choiceSubjects = choiceSubjects.substring(0, choiceSubjects.length()-1);
 	            listChoiceForEachGroup.add(choiceSubjects);
+	            
+	            Course course = courseService.searchCourses("idCourse", project.getCourse().getIdCourse()).get(0);
+            	courseName = course.getNom();
+	            schoolYear = course.getSchoolYear();
+            	
 	            listChoiceForEachGroup.add(courseName);
 	            listChoiceForEachGroup.add(schoolYear);
 	            

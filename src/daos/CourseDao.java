@@ -30,4 +30,12 @@ public class CourseDao {
         em.persist(course);
         transaction.commit();
 	}
+	
+	public void update(Course course, EntityManager em) {
+		EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        System.out.println(course.getIdCourse()+ " " + String.valueOf(course.getTeacher().getIdTeacher()));
+        em.merge(course);
+        transaction.commit();
+	}
 }

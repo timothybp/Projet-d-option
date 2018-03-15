@@ -54,16 +54,20 @@
   					Accueil</a>
   				</li>
   				<li>
+  					<a href="modify_course_info.jsp?jsonStrEnc=<%=jsonStrEnc %>">
+  					Modifier un cours</a>
+  				</li>
+  				<li>
   					<a href="distribute_project.jsp?jsonStrEnc=<%=jsonStrEnc %>">
   					Distribuer les projets</a>
   				</li>
   				<li>
   					<a href="allocate_project.jsp?jsonStrEnc=<%=jsonStrEnc %>">
-  					Affecter un cours de projet</a>
+  					Affecter les projet</a>
   				</li>
   				<li>
   					<a href="modify_admin_info.jsp?jsonStrEnc=<%=jsonStrEnc %>">
-  					Gestion d'administrateur</a>
+  					Gérer l'administrateur</a>
   				</li>
 			</ul>
 			
@@ -76,7 +80,7 @@
 			<div id="u1" style="position:relative;top:120px;text-align:center;">
         		<form action="load_teacher_proposition" method="post">
         			<p>
-        			Regarder la liste de projets à distribuer en <%=department %>: &nbsp;&nbsp;&nbsp;&nbsp;
+        			Regarder la liste de projets à distribuer en [<%=department %>]: &nbsp;&nbsp;&nbsp;&nbsp;
         			<select style="width:220px" name="course">
         				<option value ="default"
         				<%if(selectedCourseName.equals("")){ %> selected = "selected" <%} %> >

@@ -189,4 +189,8 @@ public class CourseService {
 	public void save(Course course) {
 		courseDao.insert(course, em);
 	}
+	
+	public void updateCourseInfo(Course course) {
+		courseDao.update(course,em);
+	}
 }

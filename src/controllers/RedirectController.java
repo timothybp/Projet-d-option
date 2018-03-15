@@ -244,6 +244,15 @@ public class RedirectController {
     	jsonObjAdmin.put("photoPath", teacher.getPhotoPath());
     	
     	CourseService courseSercice = new CourseService();
+    	List<Course> listCourse = courseSercice.searchCourses("schoolYear+department", teacher.getDepartment());
+    	JSONArray jsonArrayCourse = new JSONArray();
+    	for(Course course: listCourse){
+    		JSONObject jsonObjCourse = new JSONObject();
+    		jsonObjCourse.put("idCourse", String.valueOf(course.getIdCourse()));
+    		jsonObjCourse.put("nom", course.getNom());
+    		jsonArrayCourse.add(jsonObjCourse);
+    	}
+    	jsonObjAdmin.put("listCourse", jsonArrayCourse);
     	jsonObjAdmin.put("schoolYear", courseSercice.judgeSchoolYear());
     	
     	

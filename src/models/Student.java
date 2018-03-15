@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 @Entity
 public class Student {
 	
@@ -22,6 +25,7 @@ public class Student {
 	private String photoPath;
 	
 	@ManyToMany(cascade=CascadeType.ALL,mappedBy="listStudent")
+	@NotFound(action=NotFoundAction.IGNORE)
 	private List<Project> listProject;
 
 	

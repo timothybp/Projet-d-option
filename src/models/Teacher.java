@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 @Entity
 public class Teacher {
 	
@@ -33,6 +36,7 @@ public class Teacher {
 	}
 
 	@ManyToMany(cascade=CascadeType.ALL,mappedBy="listTeacher")
+	@NotFound(action=NotFoundAction.IGNORE)
 	private List<Project> listProject;
 
 	

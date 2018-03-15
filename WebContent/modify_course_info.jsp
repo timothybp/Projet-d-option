@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="ISO-8859-1"%>
 <%@ page language="java" import="net.sf.json.*" %>
+<%@page import="models.Course" %>
 <%@page import="java.net.URLDecoder"%>
 <%@page import="java.net.URLEncoder"%>
 
@@ -23,6 +24,8 @@
 		String department = jsonObj.getString("department");
 		String photoPath = jsonObj.getString("photoPath");
 		String schoolYear = jsonObj.getString("schoolYear");
+		
+		JSONArray jsonArrayCourse = JSONArray.fromObject(jsonObj.getString("listCourse"));
 		
 		String jsonStrEnc = URLEncoder.encode(jsonStrDec, java.nio.charset.StandardCharsets.UTF_8.toString());
     %>
@@ -67,19 +70,25 @@
 			<div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:80px;text-align:center;">
-                <h1>Création d'un cours de projet (<%=schoolYear %>)</h1>
+                <h1>Modification d'un cours de projet</h1>
         	</div>
 			
 			<div id="u1" style="position:relative;top:100px;text-align:center;">
-        		<form action="create_new_course" method="post">
+        		<form action="modify_course" method="post">
         			<p>
         				<font style="color: red;">*</font>
-        				Id de cours: &nbsp;&nbsp;&nbsp;&nbsp; <input type="text" name="idCourse" style="width:220px">&nbsp;&nbsp;&nbsp;&nbsp;
-        				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        				<font style="color: red;">*</font>
-        				Nom de cours: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="nameCourse" style="width:220px">
+        				Choisir un nom de cours avec son id: &nbsp;&nbsp;&nbsp;&nbsp;
+        				<select style="width:280px" name="courseOption">
+        					<option value ="default">-- Cours #id --</option>
+        					<%
+        						for(int i = 0; i < jsonArrayCourse.size(); i++){
+        							JSONObject jsonObjCourse = jsonArrayCourse.getJSONObject(i);
+        							String idCourse = jsonObjCourse.getString("idCourse");
+        							String nom = jsonObjCourse.getString("nom");
+        					%>
+  							<option value ="<%=nom + " #" + idCourse %>"><%=nom + " #" + idCourse %></option>
+  							<%} %>
+						</select>
         			</p>
         			<br><br>
         			<p>
@@ -128,7 +137,7 @@
         				Poid UE: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="weights" style="width:190px">
         			</P>
         			<br><br>
-        			<input type="submit" value="Créer" style="height:25px;width:100px">
+        			<input type="submit" value="Modifier" style="height:25px;width:100px">
         			<input hidden="hidden" type="text" name="host" 
         						value="<%=name+"_"+surname  %>">
         		</form>

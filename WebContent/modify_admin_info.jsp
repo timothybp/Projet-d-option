@@ -46,16 +46,20 @@
   					Accueil</a>
   				</li>
   				<li>
+  					<a href="modify_course_info.jsp?jsonStrEnc=<%=jsonStrEnc %>">
+  					Modifier un cours</a>
+  				</li>
+  				<li>
   					<a href="distribute_project.jsp?jsonStrEnc=<%=jsonStrEnc %>">
   					Distribuer les projets</a>
   				</li>
   				<li>
   					<a href="allocate_project.jsp?jsonStrEnc=<%=jsonStrEnc %>">
-  					Affecter un cours de projet</a>
+  					Affecter les projet</a>
   				</li>
   				<li>
   					<a href="modify_admin_info.jsp?jsonStrEnc=<%=jsonStrEnc %>">
-  					Gestion d'administrateur</a>
+  					Gérer l'administrateur</a>
   				</li>
 			</ul>
 			

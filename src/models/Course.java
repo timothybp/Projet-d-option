@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -26,6 +29,7 @@ public class Course {
 	private String department;
 	
 	@ManyToOne
+	@NotFound(action=NotFoundAction.IGNORE)
     @JoinColumn(name="idResponsable")
 	private Teacher teacher;
 	

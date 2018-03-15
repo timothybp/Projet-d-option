@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -17,16 +20,19 @@ public class Project {
 	private String enterprise;
 	
 	@ManyToOne
+	@NotFound(action=NotFoundAction.IGNORE)
     @JoinColumn(name="idCourse")
 	private Course course;
 	
 	@ManyToMany
+	@NotFound(action=NotFoundAction.IGNORE)
     @JoinTable(name="project_supervisor",  
             joinColumns={@JoinColumn(name="idProject")},  
             inverseJoinColumns={@JoinColumn(name="idTeacher")})  
 	private List<Teacher> listTeacher;
 	
 	@ManyToMany
+	@NotFound(action=NotFoundAction.IGNORE)
     @JoinTable(name="project_student",  
             joinColumns={@JoinColumn(name="idProject")},  
             inverseJoinColumns={@JoinColumn(name="idStudent")})  
