@@ -12,16 +12,15 @@ import models.Teacher;
 import services.TeacherService;
 
 /**
- * Servlet implementation class LoadPropositionFileServlet
+ * Servlet implementation class VisualizeSolutionServlet
  */
-
-public class LoadPropositionFileServlet extends HttpServlet {
+public class LoadSolutionFilesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LoadPropositionFileServlet() {
+    public LoadSolutionFilesServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -30,24 +29,25 @@ public class LoadPropositionFileServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String courseOptionStr = request.getParameter("course");
+		String selectedSolutionPath = request.getParameter("filepath");
+		String selectedSolution = request.getParameter("solution");
+		String selectedCourseName = request.getParameter("selectedCourseName");
+		String selectedCourseSchoolYear = request.getParameter("selectedCourseSchoolYear");
 		String host = request.getParameter("host");
 		
 		String message = "";
 		String attachment = "";
-		if(!courseOptionStr.equals("default")){
-			String courseName = courseOptionStr.split("#")[0].trim();
-			String courseSchoolYear = courseOptionStr.split("#")[1];
+		File filepath = new File(selectedSolutionPath);
+		if(!selectedSolution.equals("default")){
 			
-			
-			File filepath = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/proposition/");
 			if(!filepath.exists())
 				filepath.mkdirs();
-			String filename = filepath + "/" + courseName + "[" + courseSchoolYear + "]_pro.txt";
-			attachment = "pro#" + filename;
+			String filename = filepath + "/" + selectedSolution + ".txt";
+			attachment = "rec#" + filepath + "@" + selectedCourseName + "@" + selectedCourseSchoolYear + "@" + filename + "@" + selectedSolution;
 		}
 		else{
-			message = "Error: Il faut choisi un cours!";
+			message = "Error: Il faut choisi une solution!";
+			attachment = "sol#" + filepath + "@" + selectedCourseName + "@" + selectedCourseSchoolYear;
 		}
 		
 		TeacherService teacherService = new TeacherService();
@@ -55,7 +55,7 @@ public class LoadPropositionFileServlet extends HttpServlet {
 		Teacher teacherHost = new Teacher();
 		teacherHost = teacherService.getTeacherInfo("wholeName", host).get(0);
 		
-		redirectCtrl.redirectToAdministratorPage(teacherHost, message, "distribute_project", attachment,request, response);
+		redirectCtrl.redirectToAdministratorPage(teacherHost, message, "solutions", attachment,request, response);
 	}
 
 	/**

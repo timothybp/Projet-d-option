@@ -1,4 +1,4 @@
-package controllers;
+package controllers.globalControllers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -69,7 +69,6 @@ public class FileController {
 			fw.flush();
 			pw.close();
 			fw.close();
-			System.out.println(f.getAbsolutePath());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -118,20 +117,43 @@ public class FileController {
 			fw.flush();
 			pw.close();
 			fw.close();
-			System.out.println(f.getAbsolutePath());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void recordSolutions(List<List<String>> listSolution, File filepath){
-		String content = "";
+		StudentService studentService = new StudentService();
+		ProjectService projectService = new ProjectService();
+		
 		for(int i = 0 ; i < listSolution.size(); i++){
 			FileWriter fw = null;
 			String filename = filepath + "/solution_" + String.valueOf(i+1) + ".txt";
 			for(String line: listSolution.get(i)){
-				content = line;
-	
+				String content = "";
+				String studentIds = line.split("\t")[0];
+				String idProject = line.split("\t")[1];
+				String [] listStudentId = studentIds.split(";");
+				content += studentIds + "\t";
+				for(String idStudent: listStudentId) {
+					Student student = studentService.getStudentInfo("idStudent", idStudent).get(0);
+					content += student.getName()+ " " + student.getSurname() + ";";
+				}
+				content = content.substring(0, content.length() - 1) + "\t";
+				content += idProject + "\t";
+				Project project = projectService.searchProjectsForOneCourse("idProject", idProject).get(0);
+				for(Teacher teacher: project.getListTeacher()){
+					content += teacher.getName() + " " + teacher.getSurname() + ";";
+				}
+				content = content.substring(0, content.length()-1) + "\t";
+				
+				for(Teacher teacher: project.getListTeacher()){
+					content += String.valueOf(teacher.getIdTeacher()) + ";";
+				}
+				content = content.substring(0, content.length()-1) + "\t";
+				
+				content += project.getEnterprise();
+				
 				try {
 					File f=new File(filename);
 					fw = new FileWriter(f, true);
@@ -141,7 +163,6 @@ public class FileController {
 					fw.flush();
 					pw.close();
 					fw.close();
-					System.out.println(f.getAbsolutePath());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -262,6 +283,57 @@ public class FileController {
 		}  
 		return listChoice;
 	}
+	
+	public List<String> readSolutionDir(String filepath){
+		int fileAmount = 0;
+		File dir = new File(filepath);
+		List<String> listFilename = new ArrayList<String>();
+		File[] files = dir.listFiles();
+		for(int i = 0; i < files.length; i++){
+			File f = files[i];
+			String filename = f.getName().substring(0,f.getName().length()-4);
+			listFilename.add(filename);
+		}
+		return listFilename;
+	}
+	
+	public List<List<String>> readSolutionRecordFile(String filename){
+		FileInputStream inputStream;
+		List<List<String>> listRecord = new ArrayList<List<String>>();
+		
+		try {
+			inputStream = new FileInputStream(filename);
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));  
+			
+	        String str = null;  
+	        while((str = bufferedReader.readLine()) != null)  
+	        {  
+	        	List<String> listRecordAttribute = new ArrayList<String>();
+	            String memberIds = str.split("\t")[0];
+	            String memberNames = str.split("\t")[1];
+	            String projectIds = str.split("\t")[2];
+	            String projectNames = str.split("\t")[3];
+	            String supervisorNames = str.split("\t")[4];
+	            String enterprise = str.split("\t")[5];
+	            
+	            listRecordAttribute.add(memberIds);
+	            listRecordAttribute.add(memberNames);
+	            listRecordAttribute.add(projectIds);
+	            listRecordAttribute.add(projectNames);
+	            listRecordAttribute.add(supervisorNames);
+	            listRecordAttribute.add(enterprise);
+	            
+	            listRecord.add(listRecordAttribute);
+	        }  
+	        inputStream.close();  
+	        bufferedReader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		return listRecord;
+	}
+	
 	public void deleteFile(String filename){
 		File file = new File(filename);
 		if (file.exists() && file.isFile()) {

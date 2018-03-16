@@ -23,6 +23,34 @@
 		String department = jsonObj.getString("department");
 		String photoPath = jsonObj.getString("photoPath");
 		
+		String selectedCourseName = "";
+		String selectedCourseSchoolYear = "";
+		String solutionFilePath = "";
+		String solutionFileNames = "";
+		JSONArray jsonArraySolution = JSONArray.fromObject(jsonObj.getString("listSolution"));
+		if(jsonArraySolution.size() != 0){
+			selectedCourseName = jsonArraySolution.getJSONObject(0).getString("selectedCourseName");
+			selectedCourseSchoolYear = jsonArraySolution.getJSONObject(0).getString("selectedCourseSchoolYear");
+			solutionFileNames = jsonArraySolution.getJSONObject(0).getString("solutionFileNames");
+			solutionFilePath = jsonArraySolution.getJSONObject(0).getString("solutionFilePath");
+		}
+		String [] listSolutionName = solutionFileNames.split(";");
+		
+		String memberNames = "";
+		String projectNames = "";
+		String supervisorNames = "";
+		String enterprise = "";
+		String selectedSolution = "";
+		JSONArray jsonArrayRecord = JSONArray.fromObject(jsonObj.getString("listRecord"));
+		if(jsonArrayRecord.size() != 0){
+			memberNames = jsonArrayRecord.getJSONObject(0).getString("memberNames");
+			projectNames = jsonArrayRecord.getJSONObject(0).getString("projectNames");
+			supervisorNames = jsonArrayRecord.getJSONObject(0).getString("supervisorNames");
+			enterprise = jsonArrayRecord.getJSONObject(0).getString("enterprise");
+			selectedCourseName = jsonArrayRecord.getJSONObject(0).getString("selectedCourseName");
+			selectedCourseSchoolYear = jsonArrayRecord.getJSONObject(0).getString("selectedCourseSchoolYear");
+			selectedSolution = jsonArrayRecord.getJSONObject(0).getString("selectedSolution");
+		}
 		String jsonStrEnc = URLEncoder.encode(jsonStrDec, java.nio.charset.StandardCharsets.UTF_8.toString());
     %>
             		
@@ -43,23 +71,40 @@
 			<div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:50px;text-align:center;">
-                <h1>Solutions d'affectation des projets</h1>
+                <h1>Solutions d'affectation pour les projects [<%=selectedCourseName %>]</h1>
         	</div>
 		
         	<div id="u1" style="position:relative;top:100px;text-align:center;">
-        		<form>
+        		<form action="load_solution_files" method="post">
         			<p>
         			Regarder les solutions d'affectation: &nbsp;&nbsp;&nbsp;&nbsp;
-        			<select style="width:180px" name="course">
-  						<option value ="projetSI">Solution 1</option>
-  						<option value ="prd">Solution 2</option>
-  						<option value ="projetASR">Solution 3</option>
+        			<select style="width:250px" name="solution">
+        				<option value ="default"
+        				<%if(selectedSolution.equals("")){ %> selected = "selected" <%} %> >
+        				Solutions disponibles à valider</option>
+        				
+        				<%
+        					for(int i = 0; i < listSolutionName.length; i++){
+        						String solutionName = listSolutionName[i];
+        				%>
+        				<option value ="solution_<%=i+1%>"
+  						<%if(solutionName.equals(selectedSolution)){ %> selected = "selected" <%} %> >
+  						<%=solutionName %></option>
+						<% } %>
 					</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="submit" value="Rechercher" style="height:25px;width:100px">
 					</p><br>
+					<input hidden="hidden" type="text" name="selectedCourseName" 
+        						value="<%=selectedCourseName  %>">
+        			<input hidden="hidden" type="text" name="selectedCourseSchoolYear" 
+        						value="<%=selectedCourseSchoolYear  %>">
+        			<input hidden="hidden" type="text" name="filepath" 
+        						value="<%=solutionFilePath  %>">
+					<input hidden="hidden" type="text" name="host" 
+        						value="<%=name+"_"+surname  %>">
 				</form>
-				<form>
+				<form action="valid_solution" method="">
 					<table class="gridtable" style="position:relative; width: 95%;left:30px;">
         				<tr class="header">
         					<th width="50">Numéro</th>
@@ -68,13 +113,33 @@
         					<th>Encadrant.e.s</th>
         					<th width="150">Entreprise</th>
         				</tr>
+        				<%if(jsonArrayRecord.size() == 0) { %>
         				<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        				<%}
+        				else {
+        					for(int j = 0; j < jsonArrayRecord.size(); j++){
+        				%>
+        				<tr>
+        					<td><%=j+1 %></td>
+        					<td><%=memberNames %></td>
+        					<td><%=projectNames %></td>
+        					<td><%=supervisorNames %></td>
+        					<td><%=enterprise %></td>
+        				</tr>
+        				<%}} %>
         			</table>
         			<br><br><br>
         			<p>
-        				Vous voulez valider la solution: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        				Saisir le numéro de solution que vous voulez valider: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         				<input type="text" name="solutionId" style="position:relative; width:5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         				<input type="submit" value="Valider" style="height:25px;width:100px">
+        				<input hidden="hidden" type="text" name="host" 
+        						value="<%=name+"_"+surname  %>">
+        				<input hidden="hidden" type="text" name="selectedCourseName" 
+        						value="<%=selectedCourseName  %>">
+        				<input hidden="hidden" type="text" name="selectedCourseSchoolYear" 
+        						value="<%=selectedCourseSchoolYear  %>">
+        				
         			</p>
         		</form>
         	</div>		

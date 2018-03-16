@@ -101,7 +101,7 @@
         						value="<%=name+"_"+surname  %>">
 					</p><br>
 				</form>
-				<form>
+				<form action="allocate_project" method="post">
 					<table class="gridtable" style="position:relative; width: 95%;left:30px;">
         				<tr class="header">
         					<th width="50">Numéro</th>
@@ -126,8 +126,6 @@
         				</tr>
         				<%}} %>
         			</table>
-        		</form>
-        		<form action="allocate_project" method="post">
         			<input type="submit" value="Affecter" style="position: relative; top:30px;height:25px;width:100px">
         			<input hidden="hidden" type="text" name="host_1" 
         				value="<%=name+"_"+surname  %>">

@@ -1,4 +1,4 @@
-package controllers;
+package controllers.teacherControllers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controllers.globalControllers.FileController;
+import controllers.globalControllers.RedirectController;
 import models.Course;
 import models.Project;
 import models.Student;
@@ -30,13 +32,13 @@ import services.TeacherService;
 /**
  * Servlet implementation class ProposeServlet
  */
-public class ProposeServlet extends HttpServlet {
+public class ProposeProjectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ProposeServlet() {
+    public ProposeProjectServlet() {
         super();
         // TODO Auto-generated constructor stub
     }

@@ -1,4 +1,4 @@
-package controllers;
+package controllers.adminControllers;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controllers.globalControllers.FileController;
+import controllers.globalControllers.RedirectController;
 import models.Course;
 import models.Project;
 import models.Teacher;
@@ -80,7 +82,7 @@ public class AllocateProjectServlet extends HttpServlet {
 			fileCtrl.recordSolutions(listSolution, filepath);
 			
 			message = "Succ¨¨s: Les solutions d'affectation sont g¨¦n¨¦r¨¦es!";
-			//fileCtrl.deleteFile(filename);
+			attachment = "sol#" + filepath  + "@" + courseName + "@" + courseSchoolYear;
 		}
 		else{
 			message = "Error: Il faut choisi un cours!";
@@ -156,7 +158,7 @@ public class AllocateProjectServlet extends HttpServlet {
         	String secondChoiceId = listSecondChoice.get(waitingGroupIndex);
         	if(listWaitingProjectId.indexOf(secondChoiceId) != -1) {
         		if(hashMapSecondChoice.get(secondChoiceId) == 1){
-            		String resultLine = listGroup.get(j) + "\t" + secondChoiceId;
+            		String resultLine = listGroup.get(waitingGroupIndex) + "\t" + secondChoiceId;
             		oneResult.add(resultLine);
             		listWaitingProjectId.remove(secondChoiceId);
             		listWaitingGroupIndex.remove(j);
@@ -180,7 +182,7 @@ public class AllocateProjectServlet extends HttpServlet {
         	String thirdChoiceId = listThirdChoice.get(waitingGroupIndex);
         	if(listWaitingProjectId.indexOf(thirdChoiceId) != -1) {
         		if(hashMapThirdChoice.get(thirdChoiceId) == 1){
-            		String resultLine = listGroup.get(k) + "\t" + thirdChoiceId;
+            		String resultLine = listGroup.get(waitingGroupIndex) + "\t" + thirdChoiceId;
             		oneResult.add(resultLine);
             		listWaitingProjectId.remove(thirdChoiceId);
             		listWaitingGroupIndex.remove(k);

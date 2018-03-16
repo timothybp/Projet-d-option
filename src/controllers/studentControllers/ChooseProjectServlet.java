@@ -1,4 +1,4 @@
-package controllers;
+package controllers.studentControllers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.JOptionPane;
 
+import controllers.globalControllers.FileController;
+import controllers.globalControllers.RedirectController;
 import models.Course;
 import models.Project;
 import models.Student;
@@ -32,13 +34,13 @@ import services.StudentService;
 /**
  * Servlet implementation class ChooseServlet
  */
-public class ChooseServlet extends HttpServlet {
+public class ChooseProjectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ChooseServlet() {
+    public ChooseProjectServlet() {
         super();
         // TODO Auto-generated constructor stub
     }

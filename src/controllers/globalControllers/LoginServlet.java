@@ -1,4 +1,4 @@
-package controllers;
+package controllers.globalControllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;

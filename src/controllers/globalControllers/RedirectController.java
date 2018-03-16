@@ -1,4 +1,4 @@
-package controllers;
+package controllers.globalControllers;
 
 import java.io.File;
 import java.io.IOException;
@@ -293,10 +293,15 @@ public class RedirectController {
 		FileController fileCtrl = new FileController();
 		JSONArray jsonArrayProject = new JSONArray();
 		JSONArray jsonArrayChoice = new JSONArray();
+		JSONArray jsonArraySolution = new JSONArray();
+		JSONArray jsonArrayRecord = new JSONArray();
+		
 		if(!attachment.equals("")){
 			String readDir = attachment.split("#")[0];
-			String filename = attachment.split("#")[1];
+			String otherInfo = attachment.split("#")[1];
+			
 			if(readDir.equals("pro")){
+				String filename = otherInfo;
 				List<Project> listProject = fileCtrl.readPropositionFile(filename);
 				for(Project project:listProject){
 					JSONObject jsonObjProject = new JSONObject();
@@ -318,6 +323,7 @@ public class RedirectController {
 			}
 			
 			if(readDir.equals("etu")){
+				String filename = otherInfo;
 				List<List<String>> listChoice = fileCtrl.readChoiceFile(filename);
 				for(List<String> listChoiceForEachGroup: listChoice){
 					JSONObject jsonObjChoice = new JSONObject();
@@ -330,9 +336,49 @@ public class RedirectController {
 					jsonArrayChoice.add(jsonObjChoice);
 				}
 			}
+			
+			if(readDir.equals("sol") || readDir.equals("rec")){
+				JSONObject jsonObjSolution = new JSONObject();
+				String filepath = otherInfo.split("@")[0];
+				String selectedCourseName = otherInfo.split("@")[1];
+				String selectedCourseSchoolYear = otherInfo.split("@")[2];
+				
+				List<String> listSolutionFilename = fileCtrl.readSolutionDir(filepath);
+				String solutionFileNames = "";
+				for(String solutionFilename : listSolutionFilename){
+					solutionFileNames += solutionFilename + ";";
+				}
+				solutionFileNames = solutionFileNames.substring(0, solutionFileNames.length()-1);
+				jsonObjSolution.put("solutionFileNames", solutionFileNames);
+				jsonObjSolution.put("selectedCourseName", selectedCourseName);
+				jsonObjSolution.put("selectedCourseSchoolYear",selectedCourseSchoolYear);
+				jsonObjSolution.put("solutionFilePath", filepath);
+				jsonArraySolution.add(jsonObjSolution);
+				
+				if(readDir.equals("rec")){
+					String filename = otherInfo.split("@")[3];
+					String selectedSolution = otherInfo.split("@")[4];
+					List<List<String>> listRecord = fileCtrl.readSolutionRecordFile(filename);
+					for(List<String> record: listRecord){
+						JSONObject jsonObjRecord = new JSONObject();
+						jsonObjRecord.put("memberIds", record.get(0));
+						jsonObjRecord.put("memberNames", record.get(1));
+						jsonObjRecord.put("projectIds", record.get(2));
+						jsonObjRecord.put("projectNames", record.get(3));
+						jsonObjRecord.put("supervisorNames", record.get(4));
+						jsonObjRecord.put("enterprise", record.get(5));
+						jsonObjRecord.put("selectedCourseName", selectedCourseName);
+						jsonObjRecord.put("selectedCourseSchoolYear",selectedCourseSchoolYear);
+						jsonObjRecord.put("selectedSolution", selectedSolution);
+						jsonArrayRecord.add(jsonObjRecord);
+					}
+				}
+			}
 		}
 		jsonObjAdmin.put("listProject", jsonArrayProject);
 		jsonObjAdmin.put("listChoice", jsonArrayChoice);
+		jsonObjAdmin.put("listSolution", jsonArraySolution);
+		jsonObjAdmin.put("listRecord", jsonArrayRecord);
 		
     	String jsonStr = "";
 		try {
