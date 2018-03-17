@@ -31,4 +31,11 @@ public class ProjectDao {
         em.persist(project);
         transaction.commit();
 	}
+	
+	public void update(Project project, EntityManager em) {
+		EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        em.merge(project);
+        transaction.commit();
+	}
 }

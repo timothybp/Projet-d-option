@@ -171,7 +171,7 @@ public class ChooseProjectServlet extends HttpServlet {
 		RedirectController redirectCtrl = new RedirectController();
 		Student student = new Student();
 		student = studentService.getStudentInfo("wholeName", host).get(0);
-		redirectCtrl.redirectToStudentPage(student,message, "student_choose_project",request, response);
+		redirectCtrl.redirectToStudentPage(student,message, "student_home","",request, response);
 	}
 
 	/**

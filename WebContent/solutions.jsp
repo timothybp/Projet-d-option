@@ -3,7 +3,8 @@
 <%@ page language="java" import="net.sf.json.*" %>
 <%@page import="java.net.URLDecoder"%>
 <%@page import="java.net.URLEncoder"%>
-
+<%@page import="java.util.List" %>
+<%@page import="java.util.ArrayList" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -36,17 +37,19 @@
 		}
 		String [] listSolutionName = solutionFileNames.split(";");
 		
-		String memberNames = "";
-		String projectNames = "";
-		String supervisorNames = "";
-		String enterprise = "";
+		List<String> memberNames = new ArrayList<String>();
+		List<String> projectNames = new ArrayList<String>();
+		List<String> supervisorNames = new ArrayList<String>();
+		List<String> enterprise = new ArrayList<String>();
 		String selectedSolution = "";
 		JSONArray jsonArrayRecord = JSONArray.fromObject(jsonObj.getString("listRecord"));
 		if(jsonArrayRecord.size() != 0){
-			memberNames = jsonArrayRecord.getJSONObject(0).getString("memberNames");
-			projectNames = jsonArrayRecord.getJSONObject(0).getString("projectNames");
-			supervisorNames = jsonArrayRecord.getJSONObject(0).getString("supervisorNames");
-			enterprise = jsonArrayRecord.getJSONObject(0).getString("enterprise");
+			for(int i = 0; i<jsonArrayRecord.size(); i++){
+				memberNames.add(jsonArrayRecord.getJSONObject(i).getString("memberNames"));
+				projectNames.add(jsonArrayRecord.getJSONObject(i).getString("projectNames"));
+				supervisorNames.add(jsonArrayRecord.getJSONObject(i).getString("supervisorNames"));
+				enterprise.add(jsonArrayRecord.getJSONObject(i).getString("enterprise"));
+			}
 			selectedCourseName = jsonArrayRecord.getJSONObject(0).getString("selectedCourseName");
 			selectedCourseSchoolYear = jsonArrayRecord.getJSONObject(0).getString("selectedCourseSchoolYear");
 			selectedSolution = jsonArrayRecord.getJSONObject(0).getString("selectedSolution");
@@ -121,17 +124,16 @@
         				%>
         				<tr>
         					<td><%=j+1 %></td>
-        					<td><%=memberNames %></td>
-        					<td><%=projectNames %></td>
-        					<td><%=supervisorNames %></td>
-        					<td><%=enterprise %></td>
+        					<td><%=memberNames.get(j) %></td>
+        					<td><%=projectNames.get(j) %></td>
+        					<td><%=supervisorNames.get(j) %></td>
+        					<td><%=enterprise.get(j) %></td>
         				</tr>
         				<%}} %>
         			</table>
         			<br><br><br>
         			<p>
-        				Saisir le numéro de solution que vous voulez valider: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        				<input type="text" name="solutionId" style="position:relative; width:5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        				Vous voulez valider cette solution? &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         				<input type="submit" value="Valider" style="height:25px;width:100px">
         				<input hidden="hidden" type="text" name="host" 
         						value="<%=name+"_"+surname  %>">
@@ -139,7 +141,8 @@
         						value="<%=selectedCourseName  %>">
         				<input hidden="hidden" type="text" name="selectedCourseSchoolYear" 
         						value="<%=selectedCourseSchoolYear  %>">
-        				
+        				<input hidden="hidden" type="text" name="selectedSolution" 
+        						value="<%=selectedSolution  %>">
         			</p>
         		</form>
         	</div>		

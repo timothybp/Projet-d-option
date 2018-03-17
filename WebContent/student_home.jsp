@@ -11,6 +11,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Etudiant</title>
 	<link href="css/header_footer.css" rel="stylesheet" type="text/css" />
+	<link href="css/menuBar.css" rel="stylesheet" type="text/css" />
 	<link href="css/table.css" rel="stylesheet" type="text/css" />
 	<script src="js/student_choose_project.js" type="text/javascript" ></script>
 </head>
@@ -30,6 +31,8 @@
 		
 		JSONArray jsonArrayCourseFirstSemester = JSONArray.fromObject(jsonObj.getString("courseListForFirstSemester"));
 		JSONArray jsonArrayCourseSecondSemester = JSONArray.fromObject(jsonObj.getString("courseListForSecondSemester"));
+		
+		String jsonStrEnc = URLEncoder.encode(jsonStrDec, java.nio.charset.StandardCharsets.UTF_8.toString());
     %>
     <div class="wrap">
             <header>
@@ -46,6 +49,17 @@
             </header>
             
             <section class="content">
+            <ul>
+  				<li>
+  					<a class="active" href="student_home.jsp?jsonStrEnc=<%=jsonStrEnc %>">
+  					Accueil</a>
+  				</li>
+  				<li>
+  					<a href="student_visualize_allocation.jsp?jsonStrEnc=<%=jsonStrEnc %>">
+  					Visualiser le résultat d'affectation</a>
+  				</li>
+			</ul>
+			
                 <div id="u0" 
                 	class="titleLable" 
                 	style="position:relative;top:30px;text-align:center;">

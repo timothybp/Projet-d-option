@@ -27,6 +27,14 @@
     <url-pattern>/choose_project</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>visualizeAllocationResult</servlet-name>
+    <servlet-class>controllers.studentControllers.VisualizeAllocationResultServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>visualizeAllocationResult</servlet-name>
+    <url-pattern>/visualize_allocation_result</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>visualizeProject</servlet-name>
     <servlet-class>controllers.teacherControllers.VisualizeProjectServlet</servlet-class>
   </servlet>

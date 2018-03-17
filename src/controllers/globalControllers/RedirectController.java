@@ -38,7 +38,7 @@ public class RedirectController {
 	}
 	
 	public void redirectToStudentPage(Student student, String message,String pageName,
-			HttpServletRequest request, HttpServletResponse response){
+			String attachment, HttpServletRequest request, HttpServletResponse response){
 		
 		JSONObject jsonObjStudent = new JSONObject();
 		jsonObjStudent.put("name", student.getName());
@@ -53,6 +53,7 @@ public class RedirectController {
 		JSONArray jsonArrayFirstCourse = new JSONArray();
 		for(Course course:courseService.searchCourses("semester", String.valueOf(student.getGrade() * 2 - 1)+"-"+student.getDepartment())){
 			JSONObject jsonObjCourse = new JSONObject();
+			jsonObjCourse.put("idCourse", course.getIdCourse());
 			jsonObjCourse.put("nom", course.getNom().replace("'", "^"));
 			jsonObjCourse.put("responsable", course.getTeacher().getName() + " " + course.getTeacher().getSurname());
 			 
@@ -94,6 +95,7 @@ public class RedirectController {
 		JSONArray jsonArraySecondCourse = new JSONArray();
 		for(Course course:courseService.searchCourses("semester", String.valueOf(student.getGrade() * 2)+"-"+student.getDepartment())){
 			JSONObject jsonObjCourse = new JSONObject();
+			jsonObjCourse.put("idCourse", course.getIdCourse());
 			jsonObjCourse.put("nom", course.getNom());
 			jsonObjCourse.put("responsable", course.getTeacher().getName() + " " + course.getTeacher().getSurname());
 			 
@@ -128,6 +130,35 @@ public class RedirectController {
 			 jsonArraySecondCourse.add(jsonObjCourse);
 		}
 		jsonObjStudent.put("courseListForSecondSemester", jsonArraySecondCourse);
+		
+		JSONArray jsonArraySelectedCourse = new JSONArray();
+		if(attachment.split("_")[0].equals("selectedCourseId")){
+			String idSelectedCourse = attachment.split("_")[1];
+			Course course = courseService.searchCourses("idCourse", idSelectedCourse).get(0);
+			for(Project project:course.getListProject()){
+				JSONObject jsonObjProject = new JSONObject();
+				String memberNames = "";
+				for(Student studentForProject: project.getListStudent()){
+					memberNames += studentForProject.getName() + " " + studentForProject.getSurname() + ";";
+				}
+				if(memberNames.length()!=0)
+					memberNames = memberNames.substring(0, memberNames.length()-1);
+				jsonObjProject.put("memberNames",memberNames);
+				jsonObjProject.put("subject", project.getSubject());
+				
+				String supervisorNames = "";
+				for(Teacher teacherForProject: project.getListTeacher()){
+					supervisorNames += teacherForProject.getName() + " " + teacherForProject.getSurname() + ";";
+				}
+				if(supervisorNames.length()!=0)
+					supervisorNames = supervisorNames.substring(0, supervisorNames.length()-1);
+				jsonObjProject.put("supervisorNames", supervisorNames);
+				jsonObjProject.put("enterprise", project.getEnterprise());
+				jsonObjProject.put("selectedCourse", course.getNom() + " #[" + course.getIdCourse() + "]");
+				jsonArraySelectedCourse.add(jsonObjProject);
+			}
+		}
+		jsonObjStudent.put("selectedCourseList", jsonArraySelectedCourse);
 		
 		String jsonStr = "";
 		try {
@@ -366,7 +397,8 @@ public class RedirectController {
 						jsonObjRecord.put("projectIds", record.get(2));
 						jsonObjRecord.put("projectNames", record.get(3));
 						jsonObjRecord.put("supervisorNames", record.get(4));
-						jsonObjRecord.put("enterprise", record.get(5));
+						jsonObjRecord.put("supervisorNames", record.get(5));
+						jsonObjRecord.put("enterprise", record.get(6));
 						jsonObjRecord.put("selectedCourseName", selectedCourseName);
 						jsonObjRecord.put("selectedCourseSchoolYear",selectedCourseSchoolYear);
 						jsonObjRecord.put("selectedSolution", selectedSolution);

@@ -53,6 +53,10 @@ public class FileController {
 	}
 	
 	public void recordChoiceToFile(List<Long> listIdStudent, List<String> listChoice, String filename){
+		File f = new File(filename);
+		if(f.exists())
+			deleteFile(filename);
+		
 		String content = "";
 		for(long id : listIdStudent){
 			content += String.valueOf(id) + ";";
@@ -61,7 +65,7 @@ public class FileController {
 		content += "\t" + listChoice.get(0) + ";" + listChoice.get(1) + ";" + listChoice.get(2); 
 		FileWriter fw = null;
 		try {
-			File f=new File(filename);
+			f=new File(filename);
 			fw = new FileWriter(f, true);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.println(content);
@@ -100,6 +104,10 @@ public class FileController {
 	}
 	
 	public void recordPropositionToFile(Project project, String filename){
+		File f = new File(filename);
+		if(f.exists())
+			deleteFile(filename);
+		
 		String content = project.getSubject() + "\t";
 		for(Teacher teacher: project.getListTeacher()){
 			content += String.valueOf(teacher.getIdTeacher()) + ";";
@@ -109,7 +117,7 @@ public class FileController {
 		
 		FileWriter fw = null;
 		try {
-			File f=new File(filename);
+			f=new File(filename);
 			fw = new FileWriter(f, true);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.println(content);
@@ -129,6 +137,11 @@ public class FileController {
 		for(int i = 0 ; i < listSolution.size(); i++){
 			FileWriter fw = null;
 			String filename = filepath + "/solution_" + String.valueOf(i+1) + ".txt";
+			
+			File f = new File(filename);
+			if(f.exists())
+				deleteFile(filename);
+			
 			for(String line: listSolution.get(i)){
 				String content = "";
 				String studentIds = line.split("\t")[0];
@@ -142,20 +155,21 @@ public class FileController {
 				content = content.substring(0, content.length() - 1) + "\t";
 				content += idProject + "\t";
 				Project project = projectService.searchProjectsForOneCourse("idProject", idProject).get(0);
-				for(Teacher teacher: project.getListTeacher()){
-					content += teacher.getName() + " " + teacher.getSurname() + ";";
-				}
-				content = content.substring(0, content.length()-1) + "\t";
+				content += project.getSubject() + "\t";
 				
 				for(Teacher teacher: project.getListTeacher()){
 					content += String.valueOf(teacher.getIdTeacher()) + ";";
+				}
+				content = content.substring(0, content.length()-1) + "\t";
+				for(Teacher teacher: project.getListTeacher()){
+					content += teacher.getName() + " " + teacher.getSurname() + ";";
 				}
 				content = content.substring(0, content.length()-1) + "\t";
 				
 				content += project.getEnterprise();
 				
 				try {
-					File f=new File(filename);
+					f=new File(filename);
 					fw = new FileWriter(f, true);
 					PrintWriter pw = new PrintWriter(fw);
 					pw.println(content);
@@ -313,13 +327,15 @@ public class FileController {
 	            String memberNames = str.split("\t")[1];
 	            String projectIds = str.split("\t")[2];
 	            String projectNames = str.split("\t")[3];
-	            String supervisorNames = str.split("\t")[4];
-	            String enterprise = str.split("\t")[5];
+	            String supervisorIds = str.split("\t")[4];
+	            String supervisorNames = str.split("\t")[5];
+	            String enterprise = str.split("\t")[6];
 	            
 	            listRecordAttribute.add(memberIds);
 	            listRecordAttribute.add(memberNames);
 	            listRecordAttribute.add(projectIds);
 	            listRecordAttribute.add(projectNames);
+	            listRecordAttribute.add(supervisorIds);
 	            listRecordAttribute.add(supervisorNames);
 	            listRecordAttribute.add(enterprise);
 	            

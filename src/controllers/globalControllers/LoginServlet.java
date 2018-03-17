@@ -78,7 +78,7 @@ public class LoginServlet extends HttpServlet {
 				else {
 					Student student = new Student();
 					student = studentService.getStudentInfo("idStudent",username.substring(0, username.length()-1)).get(0);
-					redirectCtrl.redirectToStudentPage(student, "", "student_choose_project",request, response);
+					redirectCtrl.redirectToStudentPage(student, "", "student_home", "", request, response);
 				}
 			}
 			//if the radio button is "Professeur"

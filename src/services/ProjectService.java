@@ -82,7 +82,7 @@ public class ProjectService {
 			List<Student> listStudent = new ArrayList<Student>();
 			for(int k = 0; k < resultStudent.size(); k++) {
 				Student student = new Student();
-				Object [] obj3 = (Object[])resultStudent.get(i);
+				Object [] obj3 = (Object[])resultStudent.get(k);
 				student.setIdStudent((Long)obj3[0]);
 				student.setName((String)obj3[1]);
 				student.setSurname((String)obj3[2]);
@@ -174,7 +174,7 @@ public class ProjectService {
 			for(int j = 0; j < resultTeacher.size(); j++) {
 				Teacher teacher = new Teacher();
 				Object [] obj2 = (Object[])resultTeacher.get(j);
-				teacher.setIdTeacher((Integer)obj1[0]);
+				teacher.setIdTeacher((Long)obj2[0]);
 				teacher.setName((String)obj2[1]);
 				teacher.setSurname((String)obj2[2]);
 				listTeacher.add(teacher);
@@ -187,8 +187,8 @@ public class ProjectService {
 			List<Student> listStudent = new ArrayList<Student>();
 			for(int k = 0; k < resultStudent.size(); k++) {
 				Student student = new Student();
-				Object [] obj3 = (Object[])resultStudent.get(i);
-				student.setIdStudent((Integer)obj3[0]);
+				Object [] obj3 = (Object[])resultStudent.get(k);
+				student.setIdStudent((Long)obj3[0]);
 				student.setName((String)obj3[1]);
 				student.setSurname((String)obj3[2]);
 				listStudent.add(student);
@@ -219,5 +219,9 @@ public class ProjectService {
 	
 	public void save(Project project) {
 		projectDao.insert(project, em);
+	}
+	
+	public void upadateProjectInfo(Project project) {
+		projectDao.update(project, em);
 	}
 }
