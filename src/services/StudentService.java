@@ -53,6 +53,7 @@ public class StudentService {
 		return true;
 	}
 	
+	//rechercher la liste d'¨¦tudiants selon des diff¨¦rents attributs
 	public List<Student> getStudentInfo(String attributeName, String attributeValue) {
 		String query = "";
 		

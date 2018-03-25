@@ -13,6 +13,7 @@ import services.TeacherService;
 
 /**
  * Servlet implementation class LoadPropositionFileServlet
+ * Cette classe est pour faire l'action de bouton "Rechercher" dans la page "distribute_project.jsp"
  */
 
 public class LoadPropositionFileServlet extends HttpServlet {
@@ -39,7 +40,7 @@ public class LoadPropositionFileServlet extends HttpServlet {
 			String courseName = courseOptionStr.split("#")[0].trim();
 			String courseSchoolYear = courseOptionStr.split("#")[1];
 			
-			
+			//chercher le fichier de proposition temporaire pour ce cours
 			File filepath = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/proposition/");
 			if(!filepath.exists())
 				filepath.mkdirs();

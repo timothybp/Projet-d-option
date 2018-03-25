@@ -21,6 +21,7 @@ import services.TeacherService;
 
 public class FileController {
 	
+	//cette methode est pour v¨¦rifier si l'¨¦tudiant a d¨¦j¨¤ fait les choix
 	public boolean judgeStudentExistInFile(long idStudent, String filename){
 		FileInputStream inputStream;
         boolean sign = false;
@@ -52,11 +53,8 @@ public class FileController {
 		return sign;
 	}
 	
+	//cette m¨¦thode est pour enregistrer les choix d'etudiants dans le fichier temporaire
 	public void recordChoiceToFile(List<Long> listIdStudent, List<String> listChoice, String filename){
-		File f = new File(filename);
-		if(f.exists())
-			deleteFile(filename);
-		
 		String content = "";
 		for(long id : listIdStudent){
 			content += String.valueOf(id) + ";";
@@ -65,8 +63,8 @@ public class FileController {
 		content += "\t" + listChoice.get(0) + ";" + listChoice.get(1) + ";" + listChoice.get(2); 
 		FileWriter fw = null;
 		try {
-			f=new File(filename);
-			fw = new FileWriter(f, true);
+			File file =new File(filename);
+			fw = new FileWriter(file, true);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.println(content);
 			pw.flush();
@@ -78,6 +76,7 @@ public class FileController {
 		}
 	}
 	
+	//cette m¨¦thode est pour v¨¦rifier si le sujet de projet est existant pour ce cours
 	public boolean judgeSubjectExistInFile(String subject, String filename){
         FileInputStream inputStream;
         boolean sign = false;
@@ -103,11 +102,8 @@ public class FileController {
 		return sign;
 	}
 	
+	//cette m¨¦thode est pour enregistrer les proposition de professeur au fichier temporaire
 	public void recordPropositionToFile(Project project, String filename){
-		File f = new File(filename);
-		if(f.exists())
-			deleteFile(filename);
-		
 		String content = project.getSubject() + "\t";
 		for(Teacher teacher: project.getListTeacher()){
 			content += String.valueOf(teacher.getIdTeacher()) + ";";
@@ -117,8 +113,8 @@ public class FileController {
 		
 		FileWriter fw = null;
 		try {
-			f=new File(filename);
-			fw = new FileWriter(f, true);
+			File file = new File(filename);
+			fw = new FileWriter(file, true);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.println(content);
 			pw.flush();
@@ -130,6 +126,7 @@ public class FileController {
 		}
 	}
 	
+	//cette m¨¦thode est pour enregistrer les solutions d'affectation aux fichiers temporaires
 	public void recordSolutions(List<List<String>> listSolution, File filepath){
 		StudentService studentService = new StudentService();
 		ProjectService projectService = new ProjectService();
@@ -184,6 +181,7 @@ public class FileController {
 		}
 	}
 	
+	//cette m¨¦thode est pour lire les proposition de projets du fichier temporaire
 	public List<Project> readPropositionFile(String filename){
 		FileInputStream inputStream;
 		List<Project> listProject = new ArrayList<Project>();
@@ -234,6 +232,7 @@ public class FileController {
 		return listProject;
 	}
 	
+	//cette m¨¦thode est pour lire les choix d'¨¦tudiants du fichier temporaire
 	public List<List<String>> readChoiceFile(String filename){
 		FileInputStream inputStream;
 		List<List<String>> listChoice = new ArrayList<List<String>>();
@@ -298,6 +297,7 @@ public class FileController {
 		return listChoice;
 	}
 	
+	//cette m¨¦thode est pour lire les noms de fichiers de solution dans le respiratoire temporaire 
 	public List<String> readSolutionDir(String filepath){
 		int fileAmount = 0;
 		File dir = new File(filepath);
@@ -311,6 +311,7 @@ public class FileController {
 		return listFilename;
 	}
 	
+	//cette m¨¦thode est pour lire un record de solution du fichier temporaire
 	public List<List<String>> readSolutionRecordFile(String filename){
 		FileInputStream inputStream;
 		List<List<String>> listRecord = new ArrayList<List<String>>();
@@ -350,6 +351,7 @@ public class FileController {
 		return listRecord;
 	}
 	
+	//cette m¨¦thode est pour supprimer le fichier temporaire ou le r¨¦pertoire temporaire
 	public void deleteFile(String filename){
 		File file = new File(filename);
 		if (file.exists() && file.isFile()) {

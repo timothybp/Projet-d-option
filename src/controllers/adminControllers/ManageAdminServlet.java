@@ -16,6 +16,7 @@ import services.TeacherService;
 
 /**
  * Servlet implementation class ManageAdminServlet
+ * Cette classe est pour faire l'action de bouton "Confirmer" dans la page "modify_admin_info.jsp"
  */
 public class ManageAdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

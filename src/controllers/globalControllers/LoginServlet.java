@@ -1,31 +1,14 @@
 package controllers.globalControllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.catalina.util.URLEncoder;
-
-import daos.StudentDao;
-import models.Course;
-import models.Project;
 import models.Student;
 import models.Teacher;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import services.CourseService;
 import services.StudentService;
 import services.TeacherService;
 
@@ -54,8 +37,6 @@ public class LoginServlet extends HttpServlet {
 		String password = request.getParameter("password").trim();
 		
 		String errorMessage = "";
-		
-		CourseService courseService = new CourseService();
 		
 		//if the username and password are not empty
 		if(!username.equals("") && !password.equals("")) {
@@ -102,6 +83,7 @@ public class LoginServlet extends HttpServlet {
 				}
 			}
 			
+			//if the radio button is "Administrateur"
 			else {
 				TeacherService teacherService = new TeacherService();
 				

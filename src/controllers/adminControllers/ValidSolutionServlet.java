@@ -30,6 +30,7 @@ import services.TeacherService;
 
 /**
  * Servlet implementation class ValidSolutionServlet
+ * Cette classe est pour faire l'action de bouton "Valider" dans la page "solutions.jsp"
  */
 public class ValidSolutionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -55,6 +56,7 @@ public class ValidSolutionServlet extends HttpServlet {
 		System.out.println(selectedCourseSchoolYear);
 		
 		FileController fileCtrl = new FileController();
+		//chercher le fichier de solution d'affectation temporaire pour ce cours
 		File filepathSolution = new File(this.getClass().getClassLoader().getResource("/").getPath()+ 
 						"/temp/solutions/" + selectedCourseName + "[" + selectedCourseSchoolYear + "]");
 		String filenameSolution = filepathSolution + "/" + selectedSolution + ".txt";
@@ -74,6 +76,7 @@ public class ValidSolutionServlet extends HttpServlet {
 				listStudent.add(student);
 			}
 			project.setListStudent(listStudent);
+			//Inserer la solution dans la base de donn¨¦es
 			projectService.upadateProjectInfo(project);
 		}
 		
@@ -111,7 +114,9 @@ public class ValidSolutionServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
+	
+	
+	//cette m¨¦thode est pour envoyer le fichier de solution aux ¨¦tudiants par mail
 	public void sendEmail(String senderEmailAddress, String senderEmailPassword, 
 			String receiverEmailAddress, String attechedFilename, String courseName){
 		 

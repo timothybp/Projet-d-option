@@ -27,14 +27,6 @@ public class Teacher {
 	@OneToMany(cascade=CascadeType.ALL,mappedBy="teacher")
 	private List<Course> listCourse;
 	
-	public List<Course> getListCourse() {
-		return listCourse;
-	}
-
-	public void setListCourse(List<Course> listCourse) {
-		this.listCourse = listCourse;
-	}
-
 	@ManyToMany(cascade=CascadeType.ALL,mappedBy="listTeacher")
 	@NotFound(action=NotFoundAction.IGNORE)
 	private List<Project> listProject;
@@ -119,7 +111,15 @@ public class Teacher {
 	public void setPhotoPath(String photoPath) {
 		this.photoPath = photoPath;
 	}
+	
+	public List<Course> getListCourse() {
+		return listCourse;
+	}
 
+	public void setListCourse(List<Course> listCourse) {
+		this.listCourse = listCourse;
+	}
+	
 	public List<Project> getListProject() {
 		return listProject;
 	}

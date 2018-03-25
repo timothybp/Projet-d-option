@@ -23,6 +23,7 @@ public class CourseService {
 		em = courseDao.connect();
 	}
 	
+	//rechercher la liste de cours selon des diff¨¦rents attributs
 	public List<Course> searchCourses(String attributeName, String attributeValue) {
 		String query = "";
 		
@@ -65,6 +66,7 @@ public class CourseService {
 					+ " FROM Course course"
 					+ " WHERE course.nom = '" + nom + "'"
 					+ " AND course.schoolYear = '" + judgeSchoolYear() + "'";
+			System.out.println(query);
 		}
 		
 		if(attributeName.equals("nom+schoolYear")){
@@ -103,6 +105,7 @@ public class CourseService {
 		return listCourse;
 	}
 	
+	//obtenir l'ann¨¦e scolaire actuel
 	public String judgeSchoolYear() {
 		Date date=new Date();    
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -118,6 +121,7 @@ public class CourseService {
 		return currentSchoolYear;
 	}
 	
+	//convertir le format de date "yyyy-MM-dd HH:mm:ss" en "dd/MM/yyyy HH:mm:ss"
 	public Date convertDateFormat(Date dateTime) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String formatDate = sdf.format(dateTime);  
@@ -131,6 +135,7 @@ public class CourseService {
 		return date;
 	}
 	
+	//convertir le format de date "dd/MM/yyyy HH:mm:ss" en "yyyy-MM-dd HH:mm:ss"
 	public Date recoverDateFormat(String dateTime) {
 		String date = dateTime.split(" ")[0];
 		String day = date.split("/")[0];
@@ -164,6 +169,7 @@ public class CourseService {
 		return true;
 	}
 	
+	//v¨¦rifier si la date que l'utilisateur saisie est en bon format
 	public boolean judgeDateFormat(String dateStr) {
 		String [] date = dateStr.split("/");
 		if(date.length == 3){
@@ -186,10 +192,12 @@ public class CourseService {
 		}
 	}
 	
+	//inserer un cours dans la base de donn¨¦es
 	public void save(Course course) {
 		courseDao.insert(course, em);
 	}
 	
+	//mettre ¨¤ jour un cours dans la base de donn¨¦es
 	public void updateCourseInfo(Course course) {
 		courseDao.update(course,em);
 	}

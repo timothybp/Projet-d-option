@@ -3,8 +3,8 @@ package controllers.adminControllers;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -17,13 +17,13 @@ import controllers.globalControllers.RedirectController;
 import models.Course;
 import models.Project;
 import models.Teacher;
-import net.sf.json.JSONObject;
 import services.CourseService;
 import services.ProjectService;
 import services.TeacherService;
 
 /**
  * Servlet implementation class allocateProjectServlet
+ * Cette classe est pour faire l'action de bouton "Affecter" dans la page "allocate_projet.jsp"
  */
 public class AllocateProjectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -46,6 +46,7 @@ public class AllocateProjectServlet extends HttpServlet {
 		
 		String message = "";
 		String attachment = "";
+		String pageName = "allocate_project";
 		if(!selectedCourse.equals("")){
 			String courseName = selectedCourse.split("#")[0].trim();
 			String courseSchoolYear = selectedCourse.split("#")[1];
@@ -55,6 +56,7 @@ public class AllocateProjectServlet extends HttpServlet {
 			Course course = courseService.searchCourses("nom+schoolYear", courseName.replace("'", "''") + "_" + courseSchoolYear).get(0);
 			List<Project> listProject = ProjectService.searchProjectsForOneCourse("idCourse", String.valueOf(course.getIdCourse()));
 			
+			//cr¨¦er la r¨¦pertoire temporaire o¨´ les solutions sont stock¨¦es
 			File filepath = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/choice/");
 			if(!filepath.exists())
 				filepath.mkdirs();
@@ -68,6 +70,7 @@ public class AllocateProjectServlet extends HttpServlet {
 			List<String> listSecondChoice = new ArrayList<String>();
 			List<String> listThirdChoice = new ArrayList<String>();
 			
+			//construire les listes de trois voeux
 			for(List<String> listChoiceForEachGroup: listChoice){
 				listGroup.add(listChoiceForEachGroup.get(0));
 				listFirstChoice.add(listChoiceForEachGroup.get(2).split(";")[0]);
@@ -75,6 +78,7 @@ public class AllocateProjectServlet extends HttpServlet {
 				listThirdChoice.add(listChoiceForEachGroup.get(2).split(";")[2]);
 			}
 			
+			//appeler l'algorithme d'affectation
 			List<List<String>> listSolution = generateSolution(listGroup, listFirstChoice, listSecondChoice, listThirdChoice, listProject);
 			filepath = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/solutions/" + courseName + "[" + courseSchoolYear + "]/");
 			if(!filepath.exists())
@@ -83,6 +87,7 @@ public class AllocateProjectServlet extends HttpServlet {
 			
 			message = "Succ¨¨s: Les solutions d'affectation sont g¨¦n¨¦r¨¦es!";
 			attachment = "sol#" + filepath  + "@" + courseName + "@" + courseSchoolYear;
+			pageName = "solutions";
 		}
 		else{
 			message = "Error: Il faut choisi un cours!";
@@ -92,7 +97,7 @@ public class AllocateProjectServlet extends HttpServlet {
 		Teacher teacherHost = new Teacher();
 		teacherHost = teacherService.getTeacherInfo("wholeName", host).get(0);
 		
-		redirectCtrl.redirectToAdministratorPage(teacherHost, message, "solutions", attachment,request, response);
+		redirectCtrl.redirectToAdministratorPage(teacherHost, message, pageName, attachment,request, response);
 	}
 
 	/**
@@ -102,7 +107,8 @@ public class AllocateProjectServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
+	
+	//cette m¨¦thode est l'algorithme d'affectation
 	public List<List<String>> generateSolution(List<String> listGroup, List<String> listFirstChoice, 
 			List<String> listSecondChoice, List<String> listThirdChoice, List<Project> listProject){
 		
@@ -167,7 +173,7 @@ public class AllocateProjectServlet extends HttpServlet {
         	}
         }
         
-      //R¨¦f¨¦rer le deuxi¨¨me voex
+      //R¨¦f¨¦rer le troisi¨¨me voex
         HashMap<String, Integer> hashMapThirdChoice = new HashMap<String, Integer>();
         for (String thirdChoiceId : listThirdChoice) {
             if (hashMapThirdChoice.get(thirdChoiceId) != null) {
@@ -190,20 +196,74 @@ public class AllocateProjectServlet extends HttpServlet {
         	}
         }
         
-        //traiter les groupes restants
+        //Traiter les groupes restants
         permuteAlgo("", listWaitingGroupIndex.size(),listWaitingProjectId);
         for(String solution: listPermutationResult){
         	String [] permutedProjectIds = solution.split(";");
+        	List<String> wholeOneResult = new ArrayList<String>();
+        	wholeOneResult.addAll(oneResult);
         	for(int i = 0; i < permutedProjectIds.length; i++){
         		int waitingGroupIndex = Integer.parseInt(listWaitingGroupIndex.get(i));
         		String resultLine = listGroup.get(waitingGroupIndex) + "\t" + permutedProjectIds[i];
-        		oneResult.add(resultLine);
+        		wholeOneResult.add(resultLine);
         	}
-        	listSolution.add(oneResult);
+        	listSolution.add(wholeOneResult);
         }
+        
+       //Evaluer les solutions, compter combien de resultats correspondent respectivement aux trois choix dans chaque solution 
+       List<Integer> listFirstChoiceCounter = new ArrayList<Integer> ();
+       List<Integer> listSecondChoiceCounter = new ArrayList<Integer> ();
+       List<Integer> listThirdChoiceCounter = new ArrayList<Integer> ();
+       for(List<String> solution : listSolution){
+    	   int firstChoiceCounter = 0;
+    	   int secondChoiceCounter = 0;
+    	   int thirdChoiceCounter = 0;
+    	   for(String record: solution){
+    		   String groupIds = record.split("\t")[0];
+    		   String projectId = record.split("\t")[1];
+    		   for(int i = 0; i < listGroup.size(); i++){
+    			   if(groupIds.equals(listGroup.get(i)) && projectId.equals(listFirstChoice.get(i))){
+    				   firstChoiceCounter ++;
+    			   }
+    			   else if(groupIds.equals(listGroup.get(i)) && projectId.equals(listSecondChoice.get(i))){
+    				   secondChoiceCounter ++;
+    			   }
+    			   else if(groupIds.equals(listGroup.get(i)) && projectId.equals(listThirdChoice.get(i))){
+    				   thirdChoiceCounter ++;
+    			   }
+    		   }
+    	   }
+    	   listFirstChoiceCounter.add(firstChoiceCounter);
+    	   listSecondChoiceCounter.add(secondChoiceCounter);
+    	   listThirdChoiceCounter.add(thirdChoiceCounter);
+       }
+       if(listSolution.size() != 1){
+    	 //Enlever les solutions faibles
+           for(int j = 0; j < listSolution.size(); j++){
+        	   int minFirstChoiceCounter = Collections.min(listFirstChoiceCounter);
+        	   int minSecondChoiceCounter = Collections.min(listSecondChoiceCounter);
+        	   int minThirdChoiceCounter = Collections.min(listThirdChoiceCounter);
+        	   
+        	   if(listFirstChoiceCounter.get(j) == minFirstChoiceCounter &&
+        			   listSecondChoiceCounter.get(j) == minSecondChoiceCounter &&
+        			   listThirdChoiceCounter.get(j) == minThirdChoiceCounter){
+        		   listSolution.set(j,null);
+        		   listFirstChoiceCounter.set(j, Integer.MAX_VALUE);
+        		   listSecondChoiceCounter.set(j, Integer.MAX_VALUE);
+        		   listThirdChoiceCounter.set(j, Integer.MAX_VALUE);
+        	   }
+           }
+           for(int j = 0; j < listSolution.size(); j++){
+        	   if(listSolution.get(j) == null){
+        		   listSolution.remove(null);
+        	   }
+           }
+           listSolution.remove(null);
+       }
        return listSolution;
 	}
 	
+	//Cette m¨¦thode est pour faire la permutation pour les ¨¦tudiants qui n'ont pas encore le projet
 	public void permuteAlgo(String permutationStr, int totalToTake, List<String> listWaitingProjectId){
 		for (int i = 0; i < listWaitingProjectId.size(); i++) {   
             List <String> tempListWaitingProjectId = new ArrayList<String>(listWaitingProjectId);  
@@ -214,7 +274,7 @@ public class AllocateProjectServlet extends HttpServlet {
             else
             	tempPermutationStr = permutationStr + element;
             if (totalToTake == 1) {  
-            	listPermutationResult.add(tempPermutationStr);
+            		listPermutationResult.add(tempPermutationStr);
               
             } else {  
                 int tempTotalToTake = totalToTake - 1;

@@ -16,6 +16,7 @@ import services.TeacherService;
 
 /**
  * Servlet implementation class ModifyCourseServlet
+ * Cette classe est pour faire l'action de bouton "Modifier" dans la page "modify_course_info.jsp"
  */
 public class ModifyCourseServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

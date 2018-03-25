@@ -1,15 +1,7 @@
 package controllers.teacherControllers;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +14,13 @@ import controllers.globalControllers.FileController;
 import controllers.globalControllers.RedirectController;
 import models.Course;
 import models.Project;
-import models.Student;
 import models.Teacher;
 import services.CourseService;
-import services.ProjectService;
-import services.StudentService;
 import services.TeacherService;
 
 /**
  * Servlet implementation class ProposeServlet
+ * Cette classe est pour faire l'action de bouton "Proposer" dans la page "teacher_propose_project.jsp"
  */
 public class ProposeProjectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -64,6 +54,7 @@ public class ProposeProjectServlet extends HttpServlet {
 			Course course = new Course();
 			course = (courseService.searchCourses("nom", courseName.replace("'", "''"))).get(0);
 			
+			//chercher les fichier de proposition temporaire pour ce cours 
 			File filepath = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/proposition/");
 			if(!filepath.exists())
 				filepath.mkdirs();

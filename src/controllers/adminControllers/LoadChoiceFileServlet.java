@@ -13,6 +13,7 @@ import services.TeacherService;
 
 /**
  * Servlet implementation class LoadChoiceFileServlet
+ * Cette classe est pour faire l'action de bouton "Rechercher" dans la page "allocate_project.jsp"
  */
 public class LoadChoiceFileServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -38,7 +39,7 @@ public class LoadChoiceFileServlet extends HttpServlet {
 			String courseName = courseOptionStr.split("#")[0].trim();
 			String courseSchoolYear = courseOptionStr.split("#")[1];
 			
-			
+			//chercher le fichier temporaire de choix pour ce cours
 			File filepath = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/choice/");
 			if(!filepath.exists())
 				filepath.mkdirs();

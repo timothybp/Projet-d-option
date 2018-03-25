@@ -7,13 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import controllers.globalControllers.RedirectController;
-import models.Course;
 import models.Student;
-import services.CourseService;
 import services.StudentService;
 
 /**
  * Servlet implementation class VisualizeAllocationResultServlet
+ * Cette classe est pour faire l'action de bouton "Rechercher" dans la page "student_visualize_allocation.jsp"
  */
 public class VisualizeAllocationResultServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

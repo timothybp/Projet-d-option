@@ -1,7 +1,6 @@
 package controllers.adminControllers;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -17,6 +16,7 @@ import services.TeacherService;
 
 /**
  * Servlet implementation class CreateCourseServlet
+ * Cette classe est pour faire l'action de bouton "Cr¨¦er" dans la page "admin_home.jsp"
  */
 public class CreateCourseServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

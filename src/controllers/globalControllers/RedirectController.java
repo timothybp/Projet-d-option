@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +18,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import services.CourseService;
 import services.ProjectService;
-import services.StudentService;
 
 public class RedirectController {
 	
+	//lors que l'utilisateur ne peut pas se connecter avec succ¨¨s, la page reste dans la page login
 	public void stayOnLoginPage(String errorMessage, HttpServletRequest request, HttpServletResponse response){
 		response.setContentType("text/html;charset=utf-8");
 		try {
@@ -37,9 +36,11 @@ public class RedirectController {
 		}
 	}
 	
+	//cette m¨¦thode est pour rediriger la page vers les page d'¨¦tudiant selon la parametre "pageName"
 	public void redirectToStudentPage(Student student, String message,String pageName,
 			String attachment, HttpServletRequest request, HttpServletResponse response){
 		
+		//creer un objet de json
 		JSONObject jsonObjStudent = new JSONObject();
 		jsonObjStudent.put("name", student.getName());
 		jsonObjStudent.put("surname", student.getSurname());
@@ -162,6 +163,7 @@ public class RedirectController {
 		
 		String jsonStr = "";
 		try {
+			//convertir l'objet de JSON en la chaine de caract¨¨res de JSON
 			jsonStr = java.net.URLEncoder.encode(String.valueOf(jsonObjStudent),java.nio.charset.StandardCharsets.UTF_8.toString());
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
@@ -181,10 +183,11 @@ public class RedirectController {
 		}
 	}
 	
-
+	//cette m¨¦thode est pour rediriger la page vers les page de professeur selon la parametre "pageName"
     public void redirectToTeacherPage(Teacher teacher, String message, String pageName,
     		String attachment, HttpServletRequest request, HttpServletResponse response) {
     	
+    	//creer un objet de JSON
     	JSONObject jsonObjTeacher = new JSONObject();
     	jsonObjTeacher.put("name", teacher.getName());
     	jsonObjTeacher.put("surname", teacher.getSurname());
@@ -246,6 +249,7 @@ public class RedirectController {
     	
     	String jsonStr = "";
 		try {
+			//convertir l'objet de JSON en la chaine de caract¨¨res de JSON
 			jsonStr = java.net.URLEncoder.encode(String.valueOf(jsonObjTeacher),java.nio.charset.StandardCharsets.UTF_8.toString());
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
@@ -265,9 +269,11 @@ public class RedirectController {
 		}
     }
    
+  //cette m¨¦thode est pour rediriger la page vers les page d'administrateur selon la parametre "pageName"
     public void redirectToAdministratorPage(Teacher teacher, String message,String pageName,
     		String attachment, HttpServletRequest request, HttpServletResponse response) {
     	
+    	//creer un objet de JSON
     	JSONObject jsonObjAdmin = new JSONObject();
     	jsonObjAdmin.put("name", teacher.getName());
     	jsonObjAdmin.put("surname", teacher.getSurname());
@@ -414,6 +420,7 @@ public class RedirectController {
 		
     	String jsonStr = "";
 		try {
+			//convertir l'objet de JSON en la chaine de caract¨¨res de JSON
 			jsonStr = java.net.URLEncoder.encode(String.valueOf(jsonObjAdmin),java.nio.charset.StandardCharsets.UTF_8.toString());
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block

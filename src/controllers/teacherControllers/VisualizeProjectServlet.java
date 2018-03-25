@@ -12,6 +12,7 @@ import services.TeacherService;
 
 /**
  * Servlet implementation class VisualizeServlet
+ * Cette classe est pour faire l'action de bouton "Rechercher" dans la page "teacher_home.jsp"
  */
 public class VisualizeProjectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

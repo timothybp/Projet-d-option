@@ -1,12 +1,5 @@
 package services;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +22,7 @@ public class ProjectService {
 		em = projectDao.connect();
 	}
 	
+	//cette m¨¦thode est pour rechercher la liste de projets selon des diff¨¦rents attributs
 	public List<Project> searchProjectsForOneCourse(String AttributeName, String AttributeValue) {		
 		String query = "";
 		if(AttributeName.equals("idCourse")){
@@ -96,6 +90,7 @@ public class ProjectService {
 		return listProject;
 	}
 	
+	//cette m¨¦thode est pour chercher les projets pour un professeur avec des diff¨¦rents indicateurs
 	public List<Project> ViewMyOwnProjets(String attechement, String idTeacher) {
 		String query = "";
 		String indicatorType = attechement.split("_")[0];
@@ -118,7 +113,7 @@ public class ProjectService {
 		}
 		
 		if(indicatorType.equals("subject")) {
-			String subject = indicatorValue;
+			String subject = indicatorValue.replace("'", "''");
 			query = "SELECT project.idProject, project.subject,"
 					+ " project.description, project.enterprise"
 					+ " FROM Project project JOIN project.listTeacher teacher"
@@ -217,10 +212,12 @@ public class ProjectService {
 		return listProject;
 	}
 	
+	//inserer un projet dans la base de donn¨¦es
 	public void save(Project project) {
 		projectDao.insert(project, em);
 	}
 	
+	//mettre ¨¤ jour un projet dans la base de donn¨¦es
 	public void upadateProjectInfo(Project project) {
 		projectDao.update(project, em);
 	}

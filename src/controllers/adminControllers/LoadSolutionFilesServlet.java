@@ -13,6 +13,7 @@ import services.TeacherService;
 
 /**
  * Servlet implementation class VisualizeSolutionServlet
+ * Cette classe est pour faire l'action de bouton "Rechercher" dans la page "solutions.jsp"
  */
 public class LoadSolutionFilesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -40,6 +41,7 @@ public class LoadSolutionFilesServlet extends HttpServlet {
 		File filepath = new File(selectedSolutionPath);
 		if(!selectedSolution.equals("default")){
 			
+			//chercher les fichiers de solutions temporaires pour ce cours
 			if(!filepath.exists())
 				filepath.mkdirs();
 			String filename = filepath + "/" + selectedSolution + ".txt";

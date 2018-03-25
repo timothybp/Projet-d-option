@@ -33,7 +33,7 @@ function courseName_clicked(jsonStr){
 			{tableCell += "<tr class=\"pair\">";}
 		tableCell += "<td>" + (i+1).toString() + "</td>" +
 					 "<td>" + jsonObj.projects[i].idProject + "</td>" +
-					 "<td>" + jsonObj.projects[i].subject + "</td>" +
+					 "<td>" + jsonObj.projects[i].subject.split("^").join("'") + "</td>" +
 					 "<td>" + jsonObj.projects[i].description + "</td>" +
 					 "<td>" + jsonObj.projects[i].supervisors + "</td>" +
 					 "<td>" + jsonObj.projects[i].enterprise + "</td>" +

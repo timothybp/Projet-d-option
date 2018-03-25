@@ -1,26 +1,14 @@
 package controllers.studentControllers;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.JOptionPane;
 
 import controllers.globalControllers.FileController;
 import controllers.globalControllers.RedirectController;
@@ -33,6 +21,7 @@ import services.StudentService;
 
 /**
  * Servlet implementation class ChooseServlet
+ * Cette classe est pour faire l'action de bouton "Soumettre" dans la page "student_home.jsp"
  */
 public class ChooseProjectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -74,6 +63,8 @@ public class ChooseProjectServlet extends HttpServlet {
 				grade = (course.getSemester())/2;
 			else
 				grade = (course.getSemester() + 1)/2;
+			
+			//chercher le fichier de choix pour ce cours
 			File filepath = new File(this.getClass().getClassLoader().getResource("/").getPath()+ "/temp/choice/");
 			if(!filepath.exists())
 				filepath.mkdirs();

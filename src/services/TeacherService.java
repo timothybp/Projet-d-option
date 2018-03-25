@@ -54,6 +54,7 @@ public class TeacherService {
 		return true;
 	}
 	
+	//rechercher la liste de professeur selon des diff¨¦rents attributs
 	public List<Teacher> getTeacherInfo(String attributeName, String attributeValue) {
 		String query = "";
 		
@@ -78,7 +79,6 @@ public class TeacherService {
 		}
 		
 		List resultTeacher = teacherDao.select(query,em);
-		
 		List<Teacher> listTeacher = new ArrayList<Teacher>();
 		for(int i = 0; i < resultTeacher.size(); i++){
 			Object [] obj = (Object[])resultTeacher.get(i);
@@ -99,6 +99,7 @@ public class TeacherService {
 		return listTeacher;
 	}
 	
+	//modifier le role de professeur
 	public void modifyTeacherRole(Teacher teacher) {
 		teacherDao.update(teacher, em);
 	}
